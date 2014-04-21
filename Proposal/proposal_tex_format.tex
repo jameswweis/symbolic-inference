@@ -1,0 +1,174 @@
+%==============================================================================
+% Homework number and login
+%==============================================================================
+\newcommand{\thisclass}{6.878}
+\newcommand{\thishwshort}{6.878}
+\newcommand{\thishwlong}{\thishwshort : Project Proposal}
+\newcommand{\myname}{Brian Cleary and James Weis}
+\newcommand{\mylogin}{\{bcleary, jww\}@mit.edu}
+\newcommand{\duedate}{November 4, 2013}
+
+
+%==============================================================================
+% Formatting
+%==============================================================================
+\documentclass[11pt]{article}
+\tolerance=1000
+
+%==============================================================================
+% Packages
+%==============================================================================
+
+%\usepackage{newalg}
+\usepackage{amsmath,amsfonts,amssymb}
+\usepackage{latexsym}
+\usepackage{enumerate}
+\usepackage{graphicx}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amstext}
+\usepackage{hyperref}
+\usepackage{bbm}
+\usepackage{fullpage}
+\usepackage{verbatim}
+%\usepackage{psfig}
+
+%==============================================================================
+% Macros.
+%==============================================================================
+\newcommand{\problem}[1]{\section{#1}} % Problem.
+\newcommand{\new}[1]{{\em #1\/}} % New term (set in italics).
+\newcommand{\ital}[1]{{\em #1}}
+\newcommand{\set}[1]{\{#1\}} % Set (as in \set{1,2,3})
+\newcommand{\setof}[2]{\{\,{#1}|~{#2}\,\}} % Set (as in \setof{x}{x > 0})
+\newcommand{\C}{\mathbb{C}}                % Complex numbers.
+\newcommand{\N}{\mathbb{N}}                     % Positive integers.
+\newcommand{\Q}{\mathbb{Q}}                     % Rationals.
+\newcommand{\R}{\mathbb{R}}                     % Reals.
+\newcommand{\Z}{\mathbb{Z}}                     % Integers.
+\newcommand{\compl}[1]{\overline{#1}} % Complement of ...
+\newcommand{\ind}[1]{\mathbf{1}\left(#1\right)} % Indicator function
+\newcommand{\Var}[1]{{\rm Var}\left[#1\right]}
+\newcommand{\E}[1]{{\rm E}\left[#1\right]}
+\renewcommand{\P}[1]{\Pr\left(#1\right)}
+\newcommand{\e}[1]{\exp\left(#1\right)}
+\DeclareMathOperator*{\argmin}{arg\,min}
+\DeclareMathOperator*{\argmax}{arg\,max}
+
+%==============================================================================
+% Title.
+%==============================================================================
+\begin{document}
+\author{\myname\\\mylogin}
+\date{\duedate}
+\title{\thishwlong}
+\maketitle
+
+%==============================================================================
+% Problems.
+%==============================================================================
+
+\section{Introduction}
+High throughput sequencing of cDNA (RNA-Seq) has produced large amounts of data on the transcriptomes of individual tissues, whole organisms, and meta-populations. These data can be used for discovery of genes and alternate isoforms, and for expression level quantification. Furthermore, by analyzing RNA-Seq data derived from multiple conditions, inferences can be made regarding the co-regulation and modulation of genes present in a collection of samples.
+
+Many tools for transcriptome reconstruction, such as Cufflinks \cite{trapnell10}, rely on reference databases to align short reads to existing assemblies. In many cases sequence data may derive from organisms without a reference assembly, or from samples that are expected to deviate from the reference (as in cancer cells), rendering this approach inadequate. In these instances, a {\sl de novo} approach, such as the one used in Trinity \cite{grabherr11}, can be used to reconstruct a transcriptome without the aid of a reference.
+
+Trinity identifies individual transcripts in three steps: First, the abundance of every k-mer is the data is determined, and contigs are constructed in a greedy, k-1 overlap extension that proceeds from the most abundant k-mer, to the least. Second, contigs are clustered based on transitive graph connectivity (two contigs with a k-1 overlap anywhere in their sequences will cluster). Finally, transcripts are inferred from the possible paths through all graph components within a given cluster.
+
+The purpose of this project is to improve on this process by reducing computational resource barriers, and by incorporating the mutual information in k-mer abundances across samples. For the former, we hope to avoid the single instance serial processing that takes place in the first two steps of Trinity, and the large memory consumption (potentially hundreds of Gb of RAM) that goes with these steps. While a probabilistic hashing method such as khmer \cite{pell12} could mitigate the memory consumption, it still relies on transitive graph connectivity and a significant serial processing step to cluster sequences. Methods that cluster contigs based on abundance similarity across samples \cite{sharon13} have been shown to produce biologically meaningful associations, and improved assemblies of genomic data. The latter of our two improvement goals will build on such ideas, and use k-mer abundances to aid in clustering and the resolution of specific transcript isoforms.
+
+\section{Specific aims}
+\subsection{Goal}
+We aim to improve full-length, {\sl de novo} transcriptome assembly from RNA-Seq data through the use of mutual information in k-mer abundance across multiple samples.
+
+
+\subsection{Aim 1}
+{\sl Use a streaming matrix decomposition to identify k-mer similarity, and cluster k-mers in a memory efficient manner.}
+
+\noindent RNA-Seq data are often produced in collections that involve re-sampling the same environment under different conditions. When transcripts are differentially expressed across these conditions, a covariance is imparted to each of the k-mers within a given transcript. We plan to analyze these co-variations by constructing a k-mer abundance matrix (one row per sample, one column per k-mer), and decomposing this matrix into singular values and vectors. The right singular vectors of this decomposition will correspond to eigenvectors of k-mer abundance covariance, and will inform a k-mer clustering. (Cleary et al [unpublished] have previously shown such a technique to be highly effective on metagenomic data.)
+
+The decomposition in this step can be computed in a streaming fashion using Gensim [5]. This will allow us to process RNA-Seq data in fixed memory with regards to the number of samples (likely tens of Gb of RAM). The analogous steps at this point in the Trinity pipeline cluster k-mers and contigs on the basis of k-1 overlap, neglecting covariation and potentially using hundreds of Gb of RAM.
+
+\subsection{Aim 2}
+{\sl Characterize the relative performance of covariance-based and graph-based clustering methodologies with regards to specificity, selectivity, and computational efficiency.}
+
+\noindent For success with Aim 1 to be meaningful, we will have to determine the performance of the co-variance based k-mer clustering. We will evaluate the following metrics in this step: overlap with graph-based clustering (such as Trinity) and computational efficiency with regards to both CPU and memory usage.
+
+We will develop a generative model to simulate RNA-Seq reads from the mouse transcriptome, enabling testing of our pipeline on realistic data for which the correct clustering may be reasonably inferred. This dataset was chosen and will be provided in collaboration with the Trinity team.
+
+If necessary, cluster goodness may also be analyzed via external criteria metrics (metrics that do not require knowledge of the correct clustering) such as silhouette validation \cite{rousseeuw87}. If our generative model proves useful, we could also utilize internal criteria metrics such as the adjusted Rand index \cite{rand71} and normalized mutual information \cite{strehl02}, if such analysis would add value or further understanding. Importantly, cluster overlap (and lack of overlap) will be analyzed qualitatively and from a biological perspective, as the overriding goal is to produce results of biological significance.
+
+\subsection{Aim 3 (reach)}
+  \emph{Extend the Trinity assembler to capture more k-mer associations and to better resolve the most likely transcript isophorms within each gene.}
+
+  \noindent Should we successfully complete aims 1 and 2, we would like to leverage our work to expand the Trinity de novo RNA-Seq assembler. While the results of aim 2 will determine the exact mechanism via which we attempt to update Trinity, we would ideally leverage covariation to capture more k-mer associations than can be inferred from overlap graphs. As we expect different gene isophorms to covary, we also believe it is possible to leverage mutual information to better identify transcript isophorms. Given that our initial test dataset will also have a corresponding reference genome, we will also be able to use \emph{Cufflinks} to assess the accuracy of our results.
+
+\subsection{Aim 4 (reach)}
+  \emph{Use the extended model to identify co-varying transcripts.}
+
+\noindent In addition to transcript identification and expression quantification, we hope to identify clusters of transcripts with co-varying expression patterns. In particular, co-varying k-mers that have no transitive connectivity may derive from distinct transcripts that are co-expressed. Thus, we should be able to merge de novo transcript reconstruction with abundance covariance to detect gene clusters.
+\section{Timeline}
+
+\begin{tabular}{l l}
+ \textbf{Date} & \textbf{Deliverable}\\\hline
+  November 4	& Review edits of original proposal submission; edit proposal as necessary\\
+ November 18	& Complete and submit midcourse report\\
+ December 7 	& Complete and submit final project report\\
+ December 11 	& Final project presentation\\
+\end{tabular}\\\\
+\noindent Higher-level goals on a week-by-week timeline:
+\begin{itemize}
+ \item[-] Week of October 21: Review clustering by streaming matrix decomposition.
+ \item[-] Week of October 28: Identify RNA-Seq datasets to be used; begin communication with Trinity team.
+ \item[-] Week of November 4 onwards: Attempt streaming matrix decomposition. Edit proposal as necessary.
+ \item[-] Week of November 11 onwards: Begin characterization of covariance-based clusers as soon as possible. Become familiar with Trinity assembler, and ideally compare results of clustering methods.
+ \item[-] Week of November 18 onwards: Upon completion of first two aims, attempt to extend Trinity assembler using covariance as discussed in aim 3 and aim 4.
+ \item[-] Week of November 25 onwards: Write final project report
+ \item[-] Week of December 2 onwards: Preparation for final project presentation
+ \end{itemize}
+
+
+\section{Resources}
+\subsection{External}
+We will be collaborating and conferring with two of the Trinity authors, Brian Haas and Moran Yassour. We intend to evaluate our proposed methods on mock data sets generated from reference genomes initially, and, time permitting, we will also obtain relevant data from the original authors. Relevant lectures of 6.878 include those on RNA-Seq, clustering, and matrix decomposition.
+
+\subsection{Personal}
+Previously, Brian has developed techniques that involve a streaming matrix decomposition of metagenomic data, and we will adapt those directly towards aims 1 and 2. James has experience writing clustering algorithms for RNA-Seq data. We will bring those resources to bear for aim 2, and aims 3 and 4 pending the results of initial experiments.
+
+\section{Citations}
+\begin{thebibliography}{9}
+
+  \bibitem{trapnell10}
+  Trapnell, C. et al. Transcript assembly and quantification by RNA-Seq reveals unannotated transcripts and isoform
+
+switching during cell differentiation. {\sl Nature Biotechnology}. 28, 511–515 (2010).
+
+  \bibitem{grabherr11}
+  M. Grabherr, B. Haas, M. Yassour, J. Levin, D. Thompson, I. Amit, X. Adiconis, L. Fan, R. Raychowdhury, Q. Zeng, Z. Chen, E. Mauceli, N. Hacohen, A. Gnirke, N. Rhind, F di Palma, B. Birren, C. Nusbaum, K. Lindblad-Toh, N. Friedman, and A. Regev. Full-length transcriptome assembly from RNA-Seq data without a reference genome. \textit{Nature Biotechnology}, 29, 644-652 (2011).
+
+  \bibitem{pell12}
+  Pell, J. et al. Scaling metagenome sequence assembly with probabilistic de Bruijn graphs. {\sl Proceedings of the National Academy of Sciences of the United States of America} 109, 13272–13277 (2012).
+
+  \bibitem{sharon13}
+  Sharon, I. et al. Time series community genomics analysis reveals rapid shifts in bacterial species, strains, and phage during infant gut colonization. {\sl Genome Research}, 23, 111-120 (2013).
+
+  \bibitem{rehurek20}
+  ŘEHŮŘEK, Radim and Petr SOJKA. Software Framework for Topic Modelling with Large Corpora. In Proceedings of LREC 2010 workshop New Challenges for NLP Frameworks. Valletta, Malta: University of Malta, 2010. p. 46--50, 5 pp. ISBN 2-9517408-6-7.
+
+  \bibitem{rousseeuw87}
+  Peter Rousseeuw. Silhouettes: a graphical aid to the interpretation and validation of cluster analysis. \emph{Journal of Computational and Applied Mathematics}, 20:53, 1987.
+
+  \bibitem{rand71}
+  William Rand. Objective criteria for the evaluation of clustering methods. \emph{Journal of the American Statistical Association}, 66:846, 1971.
+
+  \bibitem{strehl02}
+  Alexander Strehl and Joydeep Ghosh. Cluster ensembles -- a knowledge reuse framework for combining multiple partitions. \emph{Journal of Machine Learning Research}, 3:583, 2002.
+
+  \end{thebibliography}
+
+
+%==============================================================================
+% Ending.
+%==============================================================================
+\end{document}
