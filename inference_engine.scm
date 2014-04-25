@@ -25,18 +25,17 @@
   (pp all-knowledge))
 
 (define (ie:is-true statement context_predicate)
-	(pm:match all-knowledge all-rules)
+	;(pm:match all-knowledge all-rules) ; Generate all inferences in case new knowledge has been added but not processed yet.
 
-	;Exact context
-	(if (not context_predicate)
-		(if (member (cons statement context_predicate) all-knowledge)
-				(pp "true ") 	;TODO: return relevant paper info
-				(pp "false"))
-
-
-		)
+	(pp (ie:member statement all-knowledge))
 
 	)
+
+(define (ie:member statement current-knowledge)
+	;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
+    (cond ((null? current-knowledge) #f)
+          ((equal? statement (car (car current-knowledge))) (car current-knowledge))
+          (else (ie:member statement (cdr current-knowledge)))))
 
 
 ;; Tests
