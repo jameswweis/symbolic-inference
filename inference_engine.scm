@@ -1,6 +1,8 @@
 ;;;; inference_engine.scm
 
-(define all-knowledge)
+
+(load "pattern_matcher.scm")
+(define knowledge)
 
 (define all-rules)
 
@@ -15,6 +17,9 @@
 
 (define (ie:add-aliases new-aliases)
   (append new-aliases compound_obj_aliases))
+
+(define (ie:add-rules new-rules)
+  (append new-rules rules))
 
 (define (ie:print-knowledge)
   (pp all-knowledge))
