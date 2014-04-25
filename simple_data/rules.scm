@@ -4,5 +4,5 @@
         '(CAUSE (? a) (? c)))
 ))
 
-(pp rules)
+;(pp rules)
 (pp "rules done")

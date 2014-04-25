@@ -35,6 +35,6 @@
     ))
 ))
 
-(pp compound_obj_aliases)
-(pp knowledge)
+;(pp compound_obj_aliases)
+;(pp knowledge)
 (pp "knowledge done")
