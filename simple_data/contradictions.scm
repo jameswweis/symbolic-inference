@@ -2,5 +2,5 @@
   (cons '(CAUSE (? a) (? b))    '(CAUSE (? b) (? a)))
 ))
 
-(pp contradictions)
+;(pp contradictions)
 (pp "contradictions done")

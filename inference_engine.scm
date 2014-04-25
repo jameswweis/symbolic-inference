@@ -25,11 +25,7 @@
   (pp all-knowledge))
 
 (define (ie:is-true statement context_predicate)
-	;(pm:match all-knowledge all-rules) ; Generate all inferences in case new knowledge has been added but not processed yet.
-
-	(pp (ie:member statement all-knowledge))
-
-	)
+  (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
 	;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
@@ -37,6 +33,7 @@
 
 	; TODO: This is currently buggy!!! 
 	(let* ((type (car statement)) (args (car (cdr statement))))
+
     (cond ((null? current-knowledge) #f)
           ((equal? type (car (car current-knowledge)))  ; If statement type matches
           	(if (equal? args (car (cdr (car current-knowledge)))) ; If arguments match
