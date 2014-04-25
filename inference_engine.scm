@@ -33,9 +33,16 @@
 
 (define (ie:member statement current-knowledge)
 	;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
+
+
+	; TODO: This is currently buggy!!! 
+	(let* ((type (car statement)) (args (car (cdr statement))))
     (cond ((null? current-knowledge) #f)
-          ((equal? statement (car (car current-knowledge))) (car current-knowledge))
-          (else (ie:member statement (cdr current-knowledge)))))
+          ((equal? type (car (car current-knowledge)))  ; If statement type matches
+          	(if (equal? args (car (cdr (car current-knowledge)))) ; If arguments match
+          		#t
+          		(ie:member statement (cdr current-knowledge))))
+          (else (ie:member statement (cdr current-knowledge))))))
 
 
 ;; Tests
