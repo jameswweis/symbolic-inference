@@ -1,5 +1,6 @@
 ;;;; inference_engine.scm
 
+
 (define all-knowledge)
 
 (define all-rules)
@@ -23,6 +24,19 @@
 (define (ie:print-knowledge)
   (pp all-knowledge))
 
+(define (ie:is-true statement context_predicate)
+	(pm:match all-knowledge all-rules)
+
+	;Exact context
+	(if (not context_predicate)
+		(if (member (cons statement context_predicate) all-knowledge)
+				(pp "true ") 	;TODO: return relevant paper info
+				(pp "false"))
+
+
+		)
+
+	)
 
 
 ;; Tests
@@ -80,13 +94,3 @@
 ;;    ("journal" . "journal1")
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
-
-
-
-
-
-
-
-
-
-(ie:add-knowledge excess-knowledge)
