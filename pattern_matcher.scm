@@ -76,8 +76,10 @@ match-multiple knowledge patterns dict matched_statements cont
       )))
     ))
 
-(define (pm:match knowledge rules on_match_handler)
+(define (pm:match knowledge rules on_match_handler aliases)
   (let ((old_knowledge_size (length knowledge)))
+  
+    (match:set-compound_obj_aliases! aliases)
   
     (for-each2 rules (lambda(rule)
     
@@ -95,7 +97,7 @@ match-multiple knowledge patterns dict matched_statements cont
   
     ; if knowledge changed, repeat pm:match
     (if (> (length knowledge) old_knowledge_size)
-      (pm:match knowledge rules on_match_handler))))
+      (pm:match knowledge rules on_match_handler aliases))))
 
 ;;; Tests
 (pp "------------------------------------------")
@@ -104,9 +106,9 @@ match-multiple knowledge patterns dict matched_statements cont
 (load "simple_data/rules.scm")
 
 (define (on_match knowledge matched_statements new_statement)
-  (pp (list "on_match" matched_statements "=>" new_statement)))
+  (pp (list "!!!!! on_match" matched_statements "=>" new_statement)))
 
-(pm:match knowledge rules on_match)
+(pm:match knowledge rules on_match compound_obj_aliases)
 
 (pp "pattern_matcher done")
 
