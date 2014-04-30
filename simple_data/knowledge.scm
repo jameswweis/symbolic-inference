@@ -3,7 +3,7 @@
 ))
 
 (define knowledge (list
-#|
+
   (list 'CAUSE (list "shooting guards" 'score) (list
     (cons "title" "title1")
     (cons "author" "author1")
@@ -14,7 +14,7 @@
     (cons "pubmed" "pubmed1")
     (cons "locations" (list "loc_a1" "loc_b1"))
     ))
-|#
+
   (list 'CAUSE (list 'score 'point) (list
     (cons "title" "title2")
     (cons "author" "author2")

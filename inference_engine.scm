@@ -45,12 +45,48 @@
       (knowledgeType (car (car current-knowledge))) 
       (knowledgeArgs (car (cdr (car current-knowledge)))))
 
+
       (cond 
         ((equal? statementType knowledgeType)
-          (if (equal? statementArgs knowledgeArgs) ; TODO: aliases
+          (if (ie:eqvArgs? statementArgs knowledgeArgs) ; TODO: aliases
             #t 
             (ie:member statement (cdr current-knowledge))))
         (else (ie:member statement (cdr current-knowledge)))))))
+
+(define (ie:eqvArgs? statementArgs knowledgeArgs)
+  (cond 
+    ((not (= (length statementArgs) (length knowledgeArgs))) #f)
+    ((and (null? statementArgs) (null? knowledgeArgs)) #t)
+    (else 
+
+      (let* (   (sCar (car statementArgs))
+                (kCar (car knowledgeArgs))
+                (sCdr (cdr statementArgs))
+                (kCdr (cdr knowledgeArgs)))
+
+      ; TODO: pick it up here.
+      (set! sCar (expandList sCar))
+
+      (if (intersect? sCar kCar) 
+        (ie:eqvArgs? sCdr kCdr)
+        #f)
+
+      ))))
+
+
+(define (expandList arg aliasList)
+  (cond
+    ((null? aliasList) arg)
+    ((equal? arg (car (car (aliasList)))) (cons arg (cdr (car aliasList))))
+    (else (expandList arg (cdr aliasList)))
+  ))
+
+
+; From: http://stackoverflow.com/questions/16692978/scheme-check-if-anything-in-two-lists-are-the-same
+(define (intersect? list1 list2)
+  (and (not (null? list1))
+       (or (member     (car list1) list2)
+           (intersect? (cdr list1) list2))))
 
 ;; Tests
 (load "./simple_data/knowledge.scm")
