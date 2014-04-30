@@ -16,7 +16,7 @@
     (set! all-knowledge (append all-knowledge filtered-new-knowledge))))
 
 (define (ie:add-aliases new-aliases)
-  (append new-aliases compound_obj_aliases))
+  (append new-aliases compound_obj_liases))
 
 (define (ie:add-rules new-rules)
   (append new-rules rules))
@@ -28,10 +28,12 @@
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
-	;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
+	;TODO: Currently this just returns the first statement that matches our 
+  ;knowledge. In future steps, we want to add all matching statements to a list 
+  ;and print that list, so that (is-true (cause a b)) returns all contexts 
+  ;where that is true.
 
 
-	; TODO: This is currently buggy!!! 
 	(let* ((type (car statement)) (args (car (cdr statement))))
 
     (cond ((null? current-knowledge) #f)
