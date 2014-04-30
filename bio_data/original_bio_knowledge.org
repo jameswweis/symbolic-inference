@@ -1,0 +1,72 @@
+#+TITLE: Compiled Biological Knowledge
+* Hallmarks of cancer
+
+** Six original hallmarks of cancer
+1. Sustain Proliferative Signaling
+2. Evading Growth Suppressors
+3. Resisting Cell Death
+4. Enabling Replicative Immorality
+5. Inducing Angiogenesis
+6. Activating Invasion and Metastasis
+
+** Additional "enabling" and "emerging" hallmarks
+1. Enabling: Genome instability and mutation
+2. Enabling: Tumor-promoting inflammation
+3. Emerging: Reprogramming energy metabolism
+4. Emerging: Evading immune destruction
+
+* Intracellular circuitry of relevance in cancer
+Circuit 'outputs' or results include:
+- Gene Expression
+- Cell Proliferation
+
+* Wnt signaling pathway (simplified)
+Huelsken, J., and Juergen, B. (2000). The Wnt signalling pathway. J. Cell Sci. 113, 3545.
+- WNT + Frizzled -> WNT:Frizzled
+- WNT:Frizzled -> Dishevelled
+- Dishevelled -> GSK-3Beta
+- GSK-3Beta -> APC
+- APC -> Beta-Cetenin
+- Other Cell + E-Cadherin -> Beta-Catenin
+- Beta-Catenin + TCF -> Beta-Catenin:TCF
+- Beta-Catenin:TCF -> Changes-in-Gene-Expression
+
+* TGF-Beta Pathway
+Heldin, C., Miayazono, K., and Dijke, P. (1997). TGF-Beta signalling from cell membreane to nucleus through SMAD proteins.
+- TGF-Beta + TGF-Beta-R -> TGF-Beta:TGF-Beta-R
+- TGF-Beta:TGF-Beta-R -> SMAD4
+- SMAD4 -> p15
+- Cyclin-D + CDK4 -> Cyclin-D:CDK4
+- p16 -| Cyclin-D:CDK4
+- p15 -| Cyclin-D:CDK4
+- Cyclin-D:CDK4 -| Rb
+- HPV-E7 -| Rb
+- SMADs -> p27
+  - SMADs = SMAD4
+- Cyclin-E + CDK2 -> Cyclin-E:CDK2
+- p27 -| Cyclin-E:CDK2
+- Cyclin-E:CDK2 -> 'Cell-Proliferation
+- 'Changes-in-gene-expression -> Cyclin-E:CDK2
+-
+
+- SMADs -> p21
+
+* E2Fs Regulation
+Muller, H., et al. (2001). E2Fs regulate the expression of genes involved in differentiation, development, proliferation, and apoptosis. Genes Dev., 15(3): 257-285.
+- Rb -| E2Fs
+  - E2Fs = E2F1, E2F2, E2F3
+- E2Fs -> 'Changes-in-Gene-Expression
+
+
+
+
+* References
+- Hanahan, D., and Weinberg, R.A. (2000). The Hallmarks of Cancer. Cell 100, 57-70.
+- Hanahan, D., and Weinberg, R.A. (2011). The Hallmarks of Cancer: The Next Generation. Cell 144, 646-674.
+- Heldin, C., Miayazono, K., and Dijke, P. (1997). TGF-Beta signalling from cell membreane to nucleus through SMAD proteins.
+- Huelsken, J., and Juergen, B. (2000). The Wnt signalling pathway. J. Cell Sci. 113, 3545.
+- Muller, H., et al. (2001). E2Fs regulate the expression of genes involved in differentiation, development, proliferation, and apoptosis. Genes Dev., 15(3): 257-285.
+
+
+
+- Names. (date) title. journal issue, page-page.
