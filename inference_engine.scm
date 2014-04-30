@@ -1,13 +1,13 @@
 ;;;; inference_engine.scm
 
-
+(load "simple_data/knowledge.scm")
 (define all-knowledge)
-
 (define all-rules)
 
 (define (ie:init)
   (set! all-knowledge '())
-  (set! all-rules '()))
+  (set! all-rules '())
+  (set! compound_obj_aliases '()))
 
 
 (define (ie:add-knowledge new-knowledge)
@@ -16,10 +16,10 @@
     (set! all-knowledge (append all-knowledge filtered-new-knowledge))))
 
 (define (ie:add-aliases new-aliases)
-  (append new-aliases compound_obj_aliases))
+  (append! new-aliases compound_obj_aliases))
 
 (define (ie:add-rules new-rules)
-  (append new-rules rules))
+  (append! new-rules rules))
 
 (define (ie:print-knowledge)
   (pp all-knowledge))
@@ -28,25 +28,65 @@
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
+; Returns TRUE if the exact statement is in current-knowledge. 
 
-;; (cond ((null? current-knowledge) #f)
-;;       ((equal? statement))
-;;       (else (ie:member statement (cdr current-knowledge))))
+; TODO: (cause "kinases" x) should return TRUE if (cause kinase1 x) and 
+;       (cause kinase2 x) are in the database
+
+; TODO: (cause 'kobe 'score) should return TRUE if (cause "shooting guards" 
+;       'score) is in the database
+
+; 
+
+  (if (null? current-knowledge) #f 
+    (let*  (
+      (statementType (car statement)) 
+      (statementArgs (car (cdr statement))) 
+      (knowledgeType (car (car current-knowledge))) 
+      (knowledgeArgs (car (cdr (car current-knowledge)))))
 
 
-;; (cond ((null? current-knowledge) #f)
-;;       ((equal? statement (car (car current-knowledge))) (car current-knowledge))
-;;       (else (ie:member statement (cdr current-knowledge)))))
+      (cond 
+        ((equal? statementType knowledgeType)
+          (if (ie:eqvArgs? statementArgs knowledgeArgs) ; TODO: aliases
+            #t 
+            (ie:member statement (cdr current-knowledge))))
+        (else (ie:member statement (cdr current-knowledge)))))))
 
-;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
-  ;; (let* ((type (car statement)) (args (car (cdr statement))))
+(define (ie:eqvArgs? statementArgs knowledgeArgs)
+  (cond 
+    ((not (= (length statementArgs) (length knowledgeArgs))) #f)
+    ((and (null? statementArgs) (null? knowledgeArgs)) #t)
+    (else 
 
-  ;;   (cond ((null? current-knowledge) #f)
-  ;;         ((equal? type (car (car current-knowledge)))  ; If statement type matches
-  ;;         	(if (equal? args (car (cdr (car current-knowledge)))) ; If arguments match
-  ;;         		#t
-  ;;         		(ie:member statement (cdr current-knowledge))))
-  ;;         (else (ie:member statement (cdr current-knowledge))))))
+      (let* (   (sCar (car statementArgs))
+                (kCar (car knowledgeArgs))
+                (sCdr (cdr statementArgs))
+                (kCdr (cdr knowledgeArgs)))
+
+      ; TODO: pick it up here.
+      (set! sCar (expandList sCar))
+
+      (if (intersect? sCar kCar) 
+        (ie:eqvArgs? sCdr kCdr)
+        #f)
+
+      ))))
+
+
+(define (expandList arg aliasList)
+  (cond
+    ((null? aliasList) arg)
+    ((equal? arg (car (car (aliasList)))) (cons arg (cdr (car aliasList))))
+    (else (expandList arg (cdr aliasList)))
+  ))
+
+
+; From: http://stackoverflow.com/questions/16692978/scheme-check-if-anything-in-two-lists-are-the-same
+(define (intersect? list1 list2)
+  (and (not (null? list1))
+       (or (member     (car list1) list2)
+           (intersect? (cdr list1) list2))))
 
 ;; Tests
 (load "./simple_data/knowledge.scm")

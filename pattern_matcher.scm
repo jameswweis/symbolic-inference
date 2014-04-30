@@ -37,38 +37,49 @@ match-multiple knowledge patterns dict matched_statements cont
 |#
 
 (define (pm:sub-dict-into-pattern dict pattern)
-  (pp "pm:sub-dict-into-pattern")
-  'TODO)
+  (pp (list "pm:sub-dict-into-pattern" dict pattern))
+  
+  (define (tree-copy-with-sub tree)
+    (let loop ((tree tree))
+      (if (pair? tree)
+        (if (equal? (car tree) '?)
+            (begin 'true-block
+              (cadr (assoc (cadr tree) dict))
+            )
+            (begin 'false-block
+              (cons (loop (car tree)) (loop (cdr tree))))
+            )
+        tree)))
+  
+  (tree-copy-with-sub pattern))
 
 (define (pm:match-multiple knowledge patterns dict matched_statements cont)
   (if (equal? (length patterns) 0)
-    ; true
-    (begin 'dummy
-      (pp "true case")
+    (begin 'true-block
       (cont dict matched_statements))
     
-    ; false
-    (begin
-      (pp "false case")
+    (begin 'false-block
       (call/cc (lambda (return)
         (for-each2 knowledge (lambda (statement)
           (define (cont-match-combinators newdict n)
-            (pp `(succeed ,newdict))
+            (pp `(individual-succeed ,newdict))
             (pm:match-multiple knowledge (cdr patterns) newdict (append matched_statements statement) cont))
           
-          (pp (list "matching pattern:" (car patterns) "statement:" (list (cons (car statement) (cadr statement)))  ))
+          (pp (list "matching pattern:" (car patterns) "against:" (list (cons (car statement) (cadr statement)))  ))
           
           (let* (  (clause_and_args (list (cons (car statement) (cadr statement))))
                    (x ((match:->combinators (car patterns)) clause_and_args dict cont-match-combinators))  )
-            (pp (list "result" x))
+            (pp (list "result:" x))
             (if x (return x)))
         ))
         (return #f)
       )))
     ))
 
-(define (pm:match knowledge rules on_match_handler)
+(define (pm:match knowledge rules on_match_handler aliases)
   (let ((old_knowledge_size (length knowledge)))
+  
+    (match:set-compound_obj_aliases! aliases)
   
     (for-each2 rules (lambda(rule)
     
@@ -86,7 +97,7 @@ match-multiple knowledge patterns dict matched_statements cont
   
     ; if knowledge changed, repeat pm:match
     (if (> (length knowledge) old_knowledge_size)
-      (pm:match knowledge rules on_match_handler))))
+      (pm:match knowledge rules on_match_handler aliases))))
 
 ;;; Tests
 (pp "------------------------------------------")
@@ -95,13 +106,9 @@ match-multiple knowledge patterns dict matched_statements cont
 (load "simple_data/rules.scm")
 
 (define (on_match knowledge matched_statements new_statement)
-  (pp (list "matched" matched_statements "=>" new_statement)))
+  (pp (list "!!!!! on_match" matched_statements "=>" new_statement)))
 
-(pp rules)
-(pp (length rules))
-(pp "***********")
-
-(pm:match knowledge rules on_match)
+(pm:match knowledge rules on_match compound_obj_aliases)
 
 (pp "pattern_matcher done")
 

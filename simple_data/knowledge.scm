@@ -3,7 +3,16 @@
 ))
 
 (define knowledge (list
-#|
+  (list 'CAUSE (list 'lakers 'kobe) (list
+    (cons "title" "title0")
+    (cons "author" "author0")
+    (cons "year" "year0")
+    (cons "university" "univ0")
+    (cons "topic" "topic0")
+    (cons "journal" "journal0")
+    (cons "pubmed" "pubmed0")
+    (cons "locations" (list "loc_a0" "loc_b0"))
+    ))
   (list 'CAUSE (list "shooting guards" 'score) (list
     (cons "title" "title1")
     (cons "author" "author1")
@@ -14,7 +23,6 @@
     (cons "pubmed" "pubmed1")
     (cons "locations" (list "loc_a1" "loc_b1"))
     ))
-|#
   (list 'CAUSE (list 'score 'point) (list
     (cons "title" "title2")
     (cons "author" "author2")

@@ -3,6 +3,39 @@
 
 (declare (usual-integrations))
 
+(define match:compound_obj_aliases 'nothing)
+
+(define (match:set-compound_obj_aliases! x)
+  (set! match:compound_obj_aliases x))
+
+(define (memq? obj lst)
+  (not (not (memq obj lst))))
+
+(define (match:special-equal? dict_val data)
+  (pp (list "###special-equal?" dict_val data))
+  
+  (if (not (list? match:compound_obj_aliases))
+      ; default equality
+      (equal? dict_val data)
+      
+      ; equality with aliases
+      
+      #|
+      if thing in dict is string
+        it only matches strings
+      if thing in dict is sym
+        it matches symbols or strings
+      |#
+      (cond ((string? dict_val) (equal? dict_val data))
+            ((symbol? dict_val)
+              (let ((alias_list (assoc data match:compound_obj_aliases)))
+                (pp (list "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" (and alias_list (cdr alias_list))))
+                (or (equal? dict_val data)
+                     (and alias_list (memq? dict_val (cdr alias_list)) ))))
+            (else (equal? dict_val data))
+      )
+  ))
+
 ;;; There are match procedures that can be applied to data items.  A
 ;;; match procedure either accepts or rejects the data it is applied
 ;;; to.  Match procedures can be combined to apply to compound data
@@ -19,6 +52,8 @@
 
 (define (match:eqv pattern-constant)
   (define (eqv-match data dictionary succeed)
+    (pp (list "***eqv-match car of:" data "against:" pattern-constant "dict:" dictionary))
+  
     (and (pair? data)
 	 (eqv? (car data) pattern-constant)
 	 (succeed dictionary 1)))
@@ -30,16 +65,26 @@
 	     (restriction datum))
 	   restrictions))
   (define (element-match data dictionary succeed)
+    (pp (list "***element-match" data variable dictionary restrictions))
+  
     (and (pair? data)
 	 (ok? (car data))
 	 (let ((vcell (match:lookup variable dictionary)))
 	   (if vcell
-	       (and (equal? (match:value vcell) (car data))
-		    (succeed dictionary 1))
+        (begin 'true-block
+         (pp (list "***e-m:true-block" (match:value vcell) (car data)))
+	       (and (match:special-equal? (match:value vcell) (car data))
+              (succeed dictionary 1))
+        )
+		    
+        (begin 'false-block
+         (pp (list "***e-m:false-block"))
 	       (succeed (match:bind variable
 				    (car data)
 				    dictionary)
-			1)))))
+          1)
+        )
+      ))))
   element-match)
 
 
@@ -56,6 +101,9 @@
 
 (define (match:segment variable)
   (define (segment-match data dictionary succeed)
+  
+    (pp (list "***segment-match" data variable dictionary))
+  
     (and (list? data)
 	 (let ((vcell (match:lookup variable dictionary)))
 	   (if vcell
