@@ -28,8 +28,15 @@
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
-; Returns TRUE if statement is in current-knowledge. Doesn't care about context
-; predicates. 
+; Returns TRUE if the exact statement is in current-knowledge. 
+
+; TODO: (cause "kinases" x) should return TRUE if (cause kinase1 x) and 
+;       (cause kinase2 x) are in the database
+
+; TODO: (cause 'kobe 'score) should return TRUE if (cause "shooting guards" 
+;       'score) is in the database
+
+; 
 
   (if (null? current-knowledge) #f 
     (let*  (
