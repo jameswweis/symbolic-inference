@@ -106,6 +106,7 @@
 ;;; Syntax of matching is determined here.
 
 (define (match:element? pattern)
+  (pp (list "match:element?" pattern))
   (and (pair? pattern)
        (eq? (car pattern) '?)))
 

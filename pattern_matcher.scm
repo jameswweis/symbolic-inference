@@ -43,10 +43,10 @@ match-multiple knowledge patterns dict matched_statements cont
     (let loop ((tree tree))
       (if (pair? tree)
         (if (equal? (car tree) '?)
-            (begin 'true
+            (begin 'true-block
               (cadr (assoc (cadr tree) dict))
             )
-            (begin 'false
+            (begin 'false-block
               (cons (loop (car tree)) (loop (cdr tree))))
             )
         tree)))
@@ -55,12 +55,10 @@ match-multiple knowledge patterns dict matched_statements cont
 
 (define (pm:match-multiple knowledge patterns dict matched_statements cont)
   (if (equal? (length patterns) 0)
-    ; true
-    (begin 'dummy
+    (begin 'true-block
       (cont dict matched_statements))
     
-    ; false
-    (begin
+    (begin 'false-block
       (call/cc (lambda (return)
         (for-each2 knowledge (lambda (statement)
           (define (cont-match-combinators newdict n)
