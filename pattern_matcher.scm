@@ -37,21 +37,30 @@ match-multiple knowledge patterns dict matched_statements cont
 |#
 
 (define (pm:sub-dict-into-pattern dict pattern)
+  (pp "pm:sub-dict-into-pattern")
   'TODO)
 
-(define (pm:match-multiple nowledge patterns dict matched_statements cont)
+(define (pm:match-multiple knowledge patterns dict matched_statements cont)
   (if (equal? (length patterns) 0)
     ; true
-    (cont dict matched_statements)
+    (begin 'dummy
+      (pp "true case")
+      (cont dict matched_statements))
     
     ; false
     (begin
+      (pp "false case")
       (call/cc (lambda (return)
         (for-each2 knowledge (lambda (statement)
           (define (cont-match-combinators newdict n)
-            (pm:match-multiple (cdr patterns) newdict (append matched_statements statement) cont))
+            (pp `(succeed ,newdict))
+            (pm:match-multiple knowledge (cdr patterns) newdict (append matched_statements statement) cont))
           
-          (let ((x ((match:->combinators (car patterns)) statement dict cont-match-combinators)))
+          (pp (list "matching pattern:" (car patterns) "statement:" (list (cons (car statement) (cadr statement)))  ))
+          
+          (let* (  (clause_and_args (list (cons (car statement) (cadr statement))))
+                   (x ((match:->combinators (car patterns)) clause_and_args dict cont-match-combinators))  )
+            (pp (list "result" x))
             (if x (return x)))
         ))
         (return #f)
@@ -62,6 +71,7 @@ match-multiple knowledge patterns dict matched_statements cont
   (let ((old_knowledge_size (length knowledge)))
   
     (for-each2 rules (lambda(rule)
+    
       (let ((patterns (car rule))
             (new_statement_pattern (cdr rule)))
       
@@ -87,6 +97,10 @@ match-multiple knowledge patterns dict matched_statements cont
 (define (on_match knowledge matched_statements new_statement)
   (pp (list "matched" matched_statements "=>" new_statement)))
 
+(pp rules)
+(pp (length rules))
+(pp "***********")
+
 (pm:match knowledge rules on_match)
 
 (pp "pattern_matcher done")
@@ -103,4 +117,13 @@ match-multiple knowledge patterns dict matched_statements cont
 ;(succeed ((y (b b)) (x (b b))))
 ;(succeed ((y ()) (x (b b b))))
 ;Value: #f
+|#
+
+#|
+((match:->combinators '(cause (? a) (? b)))
+ '((cause score point))   ; <- need extra parenthesis!
+ '()
+ (lambda (dict n)
+   (pp `(succeed ,dict))
+   #f))
 |#
