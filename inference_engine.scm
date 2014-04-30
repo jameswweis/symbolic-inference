@@ -1,13 +1,13 @@
 ;;;; inference_engine.scm
 
-
+(load "simple_data/knowledge.scm")
 (define all-knowledge)
-
 (define all-rules)
 
 (define (ie:init)
   (set! all-knowledge '())
-  (set! all-rules '()))
+  (set! all-rules '())
+  (set! compound_obj_aliases '()))
 
 
 (define (ie:add-knowledge new-knowledge)
@@ -16,10 +16,10 @@
     (set! all-knowledge (append all-knowledge filtered-new-knowledge))))
 
 (define (ie:add-aliases new-aliases)
-  (append new-aliases compound_obj_liases))
+  (append! new-aliases compound_obj_aliases))
 
 (define (ie:add-rules new-rules)
-  (append new-rules rules))
+  (append! new-rules rules))
 
 (define (ie:print-knowledge)
   (pp all-knowledge))
@@ -28,30 +28,22 @@
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
-	;TODO: Currently this just returns the first statement that matches our 
-  ;knowledge. In future steps, we want to add all matching statements to a list 
-  ;and print that list, so that (is-true (cause a b)) returns all contexts 
-  ;where that is true.
+; Returns TRUE if statement is in current-knowledge. Doesn't care about context
+; predicates. 
 
-  ;; (cond ((null? current-knowledge) #f)
-;;       ((equal? statement))
-;;       (else (ie:member statement (cdr current-knowledge))))
+  (if (null? current-knowledge) #f 
+    (let*  (
+      (statementType (car statement)) 
+      (statementArgs (car (cdr statement))) 
+      (knowledgeType (car (car current-knowledge))) 
+      (knowledgeArgs (car (cdr (car current-knowledge)))))
 
-	(let* ((type (car statement)) (args (car (cdr statement))))
-
-;; (cond ((null? current-knowledge) #f)
-;;       ((equal? statement (car (car current-knowledge))) (car current-knowledge))
-;;       (else (ie:member statement (cdr current-knowledge)))))
-
-;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
-  ;; (let* ((type (car statement)) (args (car (cdr statement))))
-
-  ;;   (cond ((null? current-knowledge) #f)
-  ;;         ((equal? type (car (car current-knowledge)))  ; If statement type matches
-  ;;         	(if (equal? args (car (cdr (car current-knowledge)))) ; If arguments match
-  ;;         		#t
-  ;;         		(ie:member statement (cdr current-knowledge))))
-  ;;         (else (ie:member statement (cdr current-knowledge))))))
+      (cond 
+        ((equal? statementType knowledgeType)
+          (if (equal? statementArgs knowledgeArgs) ; TODO: aliases
+            #t 
+            (ie:member statement (cdr current-knowledge))))
+        (else (ie:member statement (cdr current-knowledge)))))))
 
 ;; Tests
 (load "./simple_data/knowledge.scm")
