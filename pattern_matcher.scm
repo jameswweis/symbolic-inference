@@ -37,30 +37,41 @@ match-multiple knowledge patterns dict matched_statements cont
 |#
 
 (define (pm:sub-dict-into-pattern dict pattern)
-  (pp "pm:sub-dict-into-pattern")
-  'TODO)
+  (pp (list "pm:sub-dict-into-pattern" dict pattern))
+  
+  (define (tree-copy-with-sub tree)
+    (let loop ((tree tree))
+      (if (pair? tree)
+        (if (equal? (car tree) '?)
+            (begin 'true
+              (cadr (assoc (cadr tree) dict))
+            )
+            (begin 'false
+              (cons (loop (car tree)) (loop (cdr tree))))
+            )
+        tree)))
+  
+  (tree-copy-with-sub pattern))
 
 (define (pm:match-multiple knowledge patterns dict matched_statements cont)
   (if (equal? (length patterns) 0)
     ; true
     (begin 'dummy
-      (pp "true case")
       (cont dict matched_statements))
     
     ; false
     (begin
-      (pp "false case")
       (call/cc (lambda (return)
         (for-each2 knowledge (lambda (statement)
           (define (cont-match-combinators newdict n)
-            (pp `(succeed ,newdict))
+            (pp `(individual-succeed ,newdict))
             (pm:match-multiple knowledge (cdr patterns) newdict (append matched_statements statement) cont))
           
-          (pp (list "matching pattern:" (car patterns) "statement:" (list (cons (car statement) (cadr statement)))  ))
+          (pp (list "matching pattern:" (car patterns) "against:" (list (cons (car statement) (cadr statement)))  ))
           
           (let* (  (clause_and_args (list (cons (car statement) (cadr statement))))
                    (x ((match:->combinators (car patterns)) clause_and_args dict cont-match-combinators))  )
-            (pp (list "result" x))
+            (pp (list "result:" x))
             (if x (return x)))
         ))
         (return #f)
@@ -95,11 +106,7 @@ match-multiple knowledge patterns dict matched_statements cont
 (load "simple_data/rules.scm")
 
 (define (on_match knowledge matched_statements new_statement)
-  (pp (list "matched" matched_statements "=>" new_statement)))
-
-(pp rules)
-(pp (length rules))
-(pp "***********")
+  (pp (list "on_match" matched_statements "=>" new_statement)))
 
 (pm:match knowledge rules on_match)
 
