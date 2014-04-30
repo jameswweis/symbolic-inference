@@ -28,10 +28,14 @@
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
-;TODO: Currently this just returns the first statement that matches our knowledge. In future steps, we want to add all matching statements to a list and print that list, so that (is-true (cause a b)) returns all contexts where that is true.
-    (cond ((null? current-knowledge) #f)
-          ((equal? statement (car (car current-knowledge))) (car current-knowledge))
-          (else (ie:member statement (cdr current-knowledge)))))
+  (cond ((null? current-knowledge) #f)
+        ((equal? statement))
+        (else (ie:member statement (cdr current-knowledge))))
+
+
+  (cond ((null? current-knowledge) #f)
+        ((equal? statement (car (car current-knowledge))) (car current-knowledge))
+        (else (ie:member statement (cdr current-knowledge)))))
 
 
 ;; Tests
