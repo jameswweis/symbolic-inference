@@ -137,5 +137,5 @@
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
 
-(ie:is-true (list 'CAUSE (list 'lakers 'kobe) '()))
+(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
 ; Expect to return true.
