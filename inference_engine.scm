@@ -5,7 +5,7 @@
 (define all-rules)
 
 (define (ie:init)
-  (set! all-knowledge '())
+  (set! all-knowledge knowledge)
   (set! all-rules '())
   (set! compound_obj_aliases '()))
 
@@ -89,6 +89,7 @@
 (ie:print-knowledge)
 ; ()
 
+
 (define excess-knowledge (list
 (list 'CAUSE (list "shooting guards" 'score)
       (list
@@ -101,6 +102,7 @@
        (cons "pubmed" "pubmed1")
        (cons "locations" (list "loc_a1" "loc_b1"))))))
 ;Value: excess-knowledge
+
 
 (ie:add-knowledge excess-knowledge)
 ;Value: ()
@@ -134,3 +136,6 @@
 ;;    ("journal" . "journal1")
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
+
+(ie:is-true (list 'CAUSE (list 'lakers 'kobe) '()))
+; Expect to return true.
