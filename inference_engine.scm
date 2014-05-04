@@ -86,7 +86,7 @@
 (ie:init)
 ;Value: ()
 
-(ie:print-knowledge)
+;(ie:print-knowledge)
 ; ()
 
 
@@ -107,7 +107,7 @@
 (ie:add-knowledge excess-knowledge)
 ;Value: ()
 
-(ie:print-knowledge)
+;(ie:print-knowledge)
 ;; ((cause
 ;;   ("shooting guards" score)
 ;;   (("title" . "title1")
@@ -125,7 +125,7 @@
 ;;  ("university" . "univ1") ("topic" . "topic1") ("journal" . "journal1")
 ;;  ("pubmed" . "pubmed1") ("locations" "loc_a1" "loc_b1"))))
 
-(ie:print-knowledge)
+;(ie:print-knowledge)
 ;; ((cause
 ;;   ("shooting guards" score)
 ;;   (("title" . "title1")
@@ -137,5 +137,5 @@
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
 
-(ie:is-true (list 'CAUSE (list 'lakers 'kobe) '()))
+;(ie:is-true (list 'CAUSE (list 'lakers 'kobe) '()))
 ; Expect to return true.
