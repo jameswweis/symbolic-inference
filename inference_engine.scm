@@ -28,15 +28,6 @@
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
-; Returns TRUE if the exact statement is in current-knowledge. 
-
-; TODO: (cause "kinases" x) should return TRUE if (cause kinase1 x) and 
-;       (cause kinase2 x) are in the database
-
-; TODO: (cause 'kobe 'score) should return TRUE if (cause "shooting guards" 
-;       'score) is in the database
-
-; 
 
   (if (null? current-knowledge) #f 
     (let*  (
@@ -64,8 +55,8 @@
                 (sCdr (cdr statementArgs))
                 (kCdr (cdr knowledgeArgs)))
 
-      ; TODO: pick it up here.
-      (set! sCar (expandList sCar))
+      (set! sCar (expandList sCar compound_obj_aliases))
+      (set! kCar (expandList kCar compound_obj_aliases))
 
       (if (intersect? sCar kCar) 
         (ie:eqvArgs? sCdr kCdr)
