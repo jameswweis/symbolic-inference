@@ -12,7 +12,7 @@
   (not (not (memq obj lst))))
 
 (define (match:special-equal? dict_val data)
-  (pp (list "###special-equal?" dict_val data))
+  ;(pp (list "###special-equal?" dict_val data))
   
   (if (not (list? match:compound_obj_aliases))
       ; default equality
@@ -29,7 +29,7 @@
       (cond ((string? dict_val) (equal? dict_val data))
             ((symbol? dict_val)
               (let ((alias_list (assoc data match:compound_obj_aliases)))
-                (pp (list "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" (and alias_list (cdr alias_list))))
+                ;(pp (list "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" (and alias_list (cdr alias_list))))
                 (or (equal? dict_val data)
                      (and alias_list (memq? dict_val (cdr alias_list)) ))))
             (else (equal? dict_val data))
@@ -52,7 +52,7 @@
 
 (define (match:eqv pattern-constant)
   (define (eqv-match data dictionary succeed)
-    (pp (list "***eqv-match car of:" data "against:" pattern-constant "dict:" dictionary))
+    ;(pp (list "***eqv-match car of:" data "against:" pattern-constant "dict:" dictionary))
   
     (and (pair? data)
 	 (eqv? (car data) pattern-constant)
@@ -65,20 +65,20 @@
 	     (restriction datum))
 	   restrictions))
   (define (element-match data dictionary succeed)
-    (pp (list "***element-match" data variable dictionary restrictions))
+    ;(pp (list "***element-match" data variable dictionary restrictions))
   
     (and (pair? data)
 	 (ok? (car data))
 	 (let ((vcell (match:lookup variable dictionary)))
 	   (if vcell
         (begin 'true-block
-         (pp (list "***e-m:true-block" (match:value vcell) (car data)))
+         ;(pp (list "***e-m:true-block" (match:value vcell) (car data)))
 	       (and (match:special-equal? (match:value vcell) (car data))
               (succeed dictionary 1))
         )
 		    
         (begin 'false-block
-         (pp (list "***e-m:false-block"))
+         ;(pp (list "***e-m:false-block"))
 	       (succeed (match:bind variable
 				    (car data)
 				    dictionary)
@@ -102,7 +102,7 @@
 (define (match:segment variable)
   (define (segment-match data dictionary succeed)
   
-    (pp (list "***segment-match" data variable dictionary))
+    ;(pp (list "***segment-match" data variable dictionary))
   
     (and (list? data)
 	 (let ((vcell (match:lookup variable dictionary)))

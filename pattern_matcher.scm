@@ -33,7 +33,7 @@ match-multiple knowledge patterns dict matched_statements cont
 |#
 
 (define (pm:sub-dict-into-pattern dict pattern)
-  (pp (list "pm:sub-dict-into-pattern" dict pattern))
+  ;(pp (list "pm:sub-dict-into-pattern" dict pattern))
   
   (define (tree-copy-with-sub tree)
     (let loop ((tree tree))
@@ -58,14 +58,14 @@ match-multiple knowledge patterns dict matched_statements cont
       (call/cc (lambda (return)
         (for-each2 knowledge (lambda (statement)
           (define (cont-match-combinators newdict n)
-            (pp `(individual-succeed ,newdict))
+            ;(pp `(individual-succeed ,newdict))
             (pm:match-multiple knowledge (cdr patterns) newdict (append matched_statements statement) cont))
           
-          (pp (list "matching pattern:" (car patterns) "against:" (list (cons (car statement) (cadr statement)))  ))
+          ;(pp (list "matching pattern:" (car patterns) "against:" (list (cons (car statement) (cadr statement)))  ))
           
           (let* (  (clause_and_args (list (cons (car statement) (cadr statement))))
                    (x ((match:->combinators (car patterns)) clause_and_args dict cont-match-combinators))  )
-            (pp (list "result:" x))
+            ;(pp (list "result:" x))
             (if x (return x)))
         ))
         (return #f)
@@ -96,6 +96,7 @@ match-multiple knowledge patterns dict matched_statements cont
       (pm:match knowledge rules on_match_handler aliases))))
 
 ;;; Tests
+#|
 (pp "------------------------------------------")
 
 (load "simple_data/knowledge.scm")
@@ -107,6 +108,7 @@ match-multiple knowledge patterns dict matched_statements cont
 (pm:match knowledge rules on_match compound_obj_aliases)
 
 (pp "pattern_matcher done")
+|#
 
 #|
 ((match:->combinators '(a (?? x) (?? y) (?? x) c))

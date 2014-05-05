@@ -4,13 +4,16 @@
 (load "load")
 (cd "..")
 
+(load "pattern_matcher")
+
 (load "simple_data/knowledge.scm")
+(load "simple_data/rules.scm")
 (define all-knowledge)
 (define all-rules)
 
 (define (ie:init)
   (set! all-knowledge knowledge)
-  (set! all-rules '())
+  (set! all-rules rules)
   (set! compound_obj_aliases '()))
 
 
@@ -29,11 +32,11 @@
   (pp all-knowledge))
 
 (define (ie:is-true statement context_predicate)
+  (ie:infer context_predicate)
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
   (ie:member-helper statement current-knowledge '()))
-
 
 (define (ie:eq-arg? sArg kArg)
   (if (not (list? compound_obj_aliases))
@@ -72,68 +75,16 @@
       
       (ie:member-helper statement (cdr current-knowledge) matches))))
 
-#|
-      (cond 
-        ((equal? statementType knowledgeType)
-          (if (ie:eqvArgs? statementArgs knowledgeArgs) ; TODO: aliases
-            #t 
-            (ie:member statement (cdr current-knowledge))))
-        (else (ie:member statement (cdr current-knowledge)))))))
-|#
+(define (ie:infer context_predicate)
 
-#|
-(define (ie:member statement current-knowledge)
+  (define (on_match knowledge matched_statements new_statement)
+    (pp (list "!!!!! on_match" matched_statements "=>" new_statement))
+    
+    ; TODO: create knowledge from new statement and append! to knowledge
+    
+    )
 
-  (if (null? current-knowledge) #f 
-    (let*  (
-      (statementType (car statement)) 
-      (statementArgs (car (cdr statement))) 
-      (knowledgeType (car (car current-knowledge))) 
-      (knowledgeArgs (car (cdr (car current-knowledge)))))
-
-
-      (cond 
-        ((equal? statementType knowledgeType)
-          (if (ie:eqvArgs? statementArgs knowledgeArgs) ; TODO: aliases
-            #t 
-            (ie:member statement (cdr current-knowledge))))
-        (else (ie:member statement (cdr current-knowledge)))))))
-
-(define (ie:eqvArgs? statementArgs knowledgeArgs)
-  (cond 
-    ((not (= (length statementArgs) (length knowledgeArgs))) #f)
-    ((and (null? statementArgs) (null? knowledgeArgs)) #t)
-    (else 
-
-      (let* (   (sCar (car statementArgs))
-                (kCar (car knowledgeArgs))
-                (sCdr (cdr statementArgs))
-                (kCdr (cdr knowledgeArgs)))
-
-      (set! sCar (expandList sCar compound_obj_aliases))
-      (set! kCar (expandList kCar compound_obj_aliases))
-
-      (if (intersect? sCar kCar) 
-        (ie:eqvArgs? sCdr kCdr)
-        #f)
-
-      ))))
-
-
-(define (expandList arg aliasList)
-  (cond
-    ((null? aliasList) arg)
-    ((equal? arg (car (car (aliasList)))) (cons arg (cdr (car aliasList))))
-    (else (expandList arg (cdr aliasList)))
-  ))
-
-
-; From: http://stackoverflow.com/questions/16692978/scheme-check-if-anything-in-two-lists-are-the-same
-(define (intersect? list1 list2)
-  (and (not (null? list1))
-       (or (member     (car list1) list2)
-           (intersect? (cdr list1) list2))))
-|#
+  (pm:match all-knowledge all-rules on_match compound_obj_aliases))
 
 ;; Tests
 (load "./simple_data/knowledge.scm")
@@ -195,3 +146,4 @@
 
 (ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
 ; Expect to return true.
+
