@@ -1,5 +1,9 @@
 ;;;; inference_engine.scm
 
+(cd "lib")
+(load "load")
+(cd "..")
+
 (load "simple_data/knowledge.scm")
 (define all-knowledge)
 (define all-rules)
@@ -27,6 +31,57 @@
 (define (ie:is-true statement context_predicate)
   (pp (ie:member statement all-knowledge)))
 
+(define (ie:member statement current-knowledge)
+  (ie:member-helper statement current-knowledge '()))
+
+
+(define (ie:eq-arg? sArg kArg)
+  (if (not (list? compound_obj_aliases))
+      ; true
+      (equal? sArg kArg)
+      
+      ; false
+      (cond ((string? kArg) (equal? kArg sArg))
+            ((symbol? kArg)
+              (let ((alias_list (assoc sArg compound_obj_aliases)))
+                (or (equal? kArg sArg)
+                     (and alias_list (memq? kArg (cdr alias_list)) ))))
+            (else (equal? kArg sArg))
+      )
+    ))
+
+(define (ie:eq-args? args1 args2)
+  (cond ((and (null? args1) (null? args2)) #t)
+        ((not (ie:eq-arg? (car args1) (car args2))) #f)
+        (else (ie:eq-args? (cdr args1) (cdr args2)))))
+
+(define (ie:eq-statement-knowledge? sType sArgs kType kArgs)
+  (and (equal? sType kType) (equal? (length sArgs) (length kArgs)) (ie:eq-args? sArgs kArgs)))
+
+(define (ie:member-helper statement current-knowledge matches)
+  (if (null? current-knowledge) matches 
+    (let*  (
+      (statementType (car statement)) 
+      (statementArgs (car (cdr statement))) 
+      (knowledgeType (car (car current-knowledge))) 
+      (knowledgeArgs (car (cdr (car current-knowledge))))
+      (sk-equal (ie:eq-statement-knowledge? statementType statementArgs knowledgeType knowledgeArgs)))
+      
+      (if sk-equal
+        (set! matches (cons (car current-knowledge) matches)))
+      
+      (ie:member-helper statement (cdr current-knowledge) matches))))
+
+#|
+      (cond 
+        ((equal? statementType knowledgeType)
+          (if (ie:eqvArgs? statementArgs knowledgeArgs) ; TODO: aliases
+            #t 
+            (ie:member statement (cdr current-knowledge))))
+        (else (ie:member statement (cdr current-knowledge)))))))
+|#
+
+#|
 (define (ie:member statement current-knowledge)
 
   (if (null? current-knowledge) #f 
@@ -78,10 +133,11 @@
   (and (not (null? list1))
        (or (member     (car list1) list2)
            (intersect? (cdr list1) list2))))
+|#
 
 ;; Tests
 (load "./simple_data/knowledge.scm")
-(pp knowledge)
+;(pp knowledge)
 
 (ie:init)
 ;Value: ()
@@ -104,7 +160,7 @@
 ;Value: excess-knowledge
 
 
-(ie:add-knowledge excess-knowledge)
+;(ie:add-knowledge excess-knowledge)
 ;Value: ()
 
 ;(ie:print-knowledge)
@@ -119,7 +175,7 @@
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
 
-(ie:add-knowledge excess-knowledge)
+;(ie:add-knowledge excess-knowledge)
 ;; ;Value: ((cause ("shooting guards" score)
 ;; (("title" . "title1") ("author" . "author1") ("year" . "year1")
 ;;  ("university" . "univ1") ("topic" . "topic1") ("journal" . "journal1")
@@ -137,5 +193,5 @@
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
 
-;(ie:is-true (list 'CAUSE (list 'lakers 'kobe) '()))
+(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
 ; Expect to return true.

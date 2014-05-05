@@ -2,10 +2,6 @@
 (load "load")
 (cd "..")
 
-; for-each on a single list with reversed argument order
-(define (for-each2 lst procedure)
-  (for-each procedure lst))
-
 #|
 //pm:match procedure
 pm:match knowledge rules on_match_handler
