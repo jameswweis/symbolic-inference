@@ -53,6 +53,17 @@
    (cons "pubmed" "10647931")
    (cons "locations" (list "loc_a1" "loc_b1"))))
 
+(define cytokine-context
+  (list
+   (cons "title" "The Hallmarks of Cancer")
+   (cons "author" "Hanahan, D., and Weinberg, R.A.")
+   (cons "year" "2000")
+   (cons "university" "University of California at San Francisco")
+   (cons "topic" "Cancer")
+   (cons "journal" "Cell")
+   (cons "pubmed" "10647931")
+   (cons "locations" (list "loc_a1" "loc_b1"))))
+
 (define knowledge
   (list
    ;; Wnt signaling pathway
@@ -74,4 +85,12 @@
    '(CAUSE (PKA CREB) hormone-context)
    '(CAUSE (CREB Changes-in-gene-expression) hormone-context)
 
+   ;; Cytokine Pathway
+   '(CAUSE (Cytokines Cytokine-R Jaks) cytokine-context)
+   '(CAUSE (Jaks Stat3) cytokine-context)
+   '(CAUSE (Jaks Stat5) cytokine-context)
+   '(CAUSE (Stat3 BclXL) cytokine-context)
+   '(CAUSE (Stat5 BclXL) cytokine-context)
+   '(CAUSE (Stat3 Changes-in-gene-expression) cytokine-context)
+   '(CAUSE (Stat4 Changes-in-gene-expression) cytokine-context)
    ))
