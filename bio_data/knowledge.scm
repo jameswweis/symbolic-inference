@@ -64,6 +64,17 @@
    (cons "pubmed" "10647931")
    (cons "locations" (list "loc_a1" "loc_b1"))))
 
+(define tgfb-context
+  (list
+   (cons "title" "TGF-Beta signaling from cell membrane to nucleus through SMAD proteins.")
+   (cons "author" "Heldin, C., Miayazono, K., and Dijke, P.")
+   (cons "year" "1997")
+   (cons "university" "Ludwig Institute for Cancer Research")
+   (cons "topic" "Cell biology")
+   (cons "journal" "Nature")
+   (cons "pubmed" "9393997")
+   (cons "locations" (list "loc_a1" "loc_b1"))))
+
 (define knowledge
   (list
    ;; Wnt signaling pathway
@@ -93,4 +104,27 @@
    '(CAUSE (Stat5 BclXL) cytokine-context)
    '(CAUSE (Stat3 Changes-in-gene-expression) cytokine-context)
    '(CAUSE (Stat4 Changes-in-gene-expression) cytokine-context)
+
+   ;; TGF-Beta Pathway
+   '(CAUSE (TGF-Beta TGF-Beta-R TGF-Beta:TGF-Beta-R) tgfb-context)
+   '(CAUSE (TGF-Beta:TGF-Beta-R SMADs) tgfb-context)
+   '(CAUSE (SMADs p15) tgfb-context)
+   '(CAUSE (Cyclin-D CDK4 Cyclin-D:CDK4) tgfb-context)
+   '(BLOCK (p16 Cyclin-D:CDK4) tgfb-context)
+   '(BLOCK (p15 Cyclin-D:CDK4) tgfb-context)
+   '(BLOCK (Cyclin-D:CDK4 Rb) tgfb-context)
+   '(BLOCK (HPV-E7 Rb) tgfb-context)
+   '(BLOCK (Rb E2Fs) tgfb-context)
+   '(BLOCK (E2Fs Changes-in-gene-expression) tgfb-context)
+   '(CAUSE (SMADs p27) tgfb-context)
+   '(CAUSE (Cyclin-E CDK2 Cyclin-E:CDK2) tgfb-context)
+   '(BLOCK (p27 Cyclin-E:CDK2) tgfb-context)
+   '(CAUSE (Cyclin-E:CDK2 Cell-proliferation) tgfb-context)
+   '(CAUSE (Changes-in-gene-expression Cyclin-E:CDK2) tgfb-context)
+   '(CAUSE (SMADs p21) tgfb-context)
+   '(CAUSE (Cyclin-E CDK2 Cyclin-E:CDK2) tgfb-context)
+   '(BLOCK (p21 Cyclin-E:CDK2) tgfb-context)
+
+
+
    ))
