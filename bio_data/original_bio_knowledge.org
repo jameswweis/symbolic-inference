@@ -1,5 +1,7 @@
 #+TITLE: Compiled Biological Knowledge
-* Hallmarks of cancer
+#+STARTUP: inlineimages
+
+* Hallmarkos of cancer
 
 ** Six original hallmarks of cancer
 1. Sustain Proliferative Signaling
@@ -16,46 +18,166 @@
 4. Emerging: Evading immune destruction
 
 * Intracellular circuitry of relevance in cancer
-Circuit 'outputs' or results include:
-- Gene Expression
-- Cell Proliferation
+#+CAPTION: Diagram of biological knowledge dataset.
+[[./BIO-KNOWLEDGE-DIAGRAM.png]]
 
-* Wnt signaling pathway (simplified)
-Huelsken, J., and Juergen, B. (2000). The Wnt signalling pathway. J. Cell Sci. 113, 3545.
+Circuit 'outputs' or results:
+- Gene Expression
+- Cell Proliferation (Cell cycle)
+- Cell Death (Apoptosis)
+
+Circuit non-molecular inputs:
+- DNA Damage Sensor
+- Abnormality Sensor
+- Other cells
+
+Note that in the following subsections, an _underline_ indicates an alias for a family of molecules, while *bold* indicates a non-molecular input or output.
+
+** Wnt signaling pathway
+Relations:
 - WNT + Frizzled -> WNT:Frizzled
 - WNT:Frizzled -> Dishevelled
 - Dishevelled -> GSK-3Beta
 - GSK-3Beta -> APC
 - APC -> Beta-Cetenin
-- Other Cell + E-Cadherin -> Beta-Catenin
+- _Other-cell_ + E-Cadherin -> Beta-Catenin
 - Beta-Catenin + TCF -> Beta-Catenin:TCF
-- Beta-Catenin:TCF -> Changes-in-Gene-Expression
+- Beta-Catenin:TCF -> *Changes-in-Gene-Expression*
 
-* TGF-Beta Pathway
-Heldin, C., Miayazono, K., and Dijke, P. (1997). TGF-Beta signalling from cell membreane to nucleus through SMAD proteins.
+** TGF-Beta Pathway
+Relations:
 - TGF-Beta + TGF-Beta-R -> TGF-Beta:TGF-Beta-R
-- TGF-Beta:TGF-Beta-R -> SMAD4
-- SMAD4 -> p15
+- TGF-Beta:TGF-Beta-R -> _SMADs_
+
+- _SMADs_ -> p15
 - Cyclin-D + CDK4 -> Cyclin-D:CDK4
 - p16 -| Cyclin-D:CDK4
 - p15 -| Cyclin-D:CDK4
 - Cyclin-D:CDK4 -| Rb
 - HPV-E7 -| Rb
-- SMADs -> p27
-  - SMADs = SMAD4
+- Rb -| _E2Fs_
+- _E2Fs_ -| *Changes-in-gene-expression*
+
+- _SMADs_ -> p27
 - Cyclin-E + CDK2 -> Cyclin-E:CDK2
 - p27 -| Cyclin-E:CDK2
-- Cyclin-E:CDK2 -> 'Cell-Proliferation
-- 'Changes-in-gene-expression -> Cyclin-E:CDK2
--
+- Cyclin-E:CDK2 -> *Cell-Proliferation*
+- *Changes-in-gene-expression* -> Cyclin-E:CDK2
 
-- SMADs -> p21
+- _SMADs_ -> p21
+- Cyclin-E + CDK2 -> Cyclin-E:CDK2
+- p21 -| Cyclin-E:CDK2
 
-* E2Fs Regulation
-Muller, H., et al. (2001). E2Fs regulate the expression of genes involved in differentiation, development, proliferation, and apoptosis. Genes Dev., 15(3): 257-285.
-- Rb -| E2Fs
-  - E2Fs = E2F1, E2F2, E2F3
-- E2Fs -> 'Changes-in-Gene-Expression
+** DNA Damage sensing pathway
+
+Relations:
+- p53 -> p21
+- p53 -> Bax
+- p53 -> *Changes-in-gene-expression*
+- *Changes-in-gene-expression* -> ARF
+- ARF -| MDM2
+- MDM2 -| p53
+- Bax -> Mitochondria
+- Mitochondria + (not Bcl2) -> *Apoptosis*
+
+** Death factor pathway
+Relations:
+- FasL + Fas + (not FAP) + (not Decoy-Fas) -> FADD
+- FADD -> Caspase8
+- Caspase8 -> Bid
+- Caspase8 -> *Apoptosis*
+- Bid -> Mitochondria
+- *Abnormality-sensor* -> Bim
+- Bim -> Mitochondria
+- Mitochondria + (not Bcl2) + (not BclXL) -> CytochromeC
+- CytochromeC -> Caspase9
+- Caspase9 -> *Apoptosis*
+
+** Cytokine Pathway
+Relations:
+- _Cytokines_ + Cytokine-R -> _Jaks_
+- _Jaks_ -> Stat3
+- _Jaks_ -> Stat5
+- Stat3 -> BclXL
+- Stat5 -> BclXL
+- Stat3 -> *Changes-in-gene-expression*
+- Stat5 -> *Changes-in-gene-expression*
+
+** Survival Factor Pathway
+Relations:
+- _Survival-factors_ + RTK -> P13K
+- _Survival-factors_ + RTK -> Ras
+- P13K -> Akt
+- PTEN -| Akt
+- Akt -> Akk-alpha
+- Akk-alpha -| IkB
+- IkB -> NF-KB
+- P13K -> PKC
+- PKC -> NF-KB
+- NF-KB -> *Changes-in-gene-expression*
+
+** Hormone Pathway
+Relations:
+- Estrogen -> ER
+- ER -> *Changes-in-gene-expression*
+- Bombesin + 7-TMR -> G-Protein
+- G-Protein -> Ad-Cyclin
+- Ad-Cyclin -> PKA
+- PKA -> CREB
+- CREB -> *Changes-in-gene-expression*
+
+** Growth factor pathway
+Relations:
+- TGF-alpha + RTK -> Grb2
+- TGF-alpha + RTK -> Src
+- TGF-alpha + RTK -> SOS
+- Grb2 -> Ras
+- SOS -> Ras
+- NF1 -| Ras
+- Abl -| Ras
+- Fyn -> Ras
+- Shc -> Ras
+- Src -> Ras
+- Ras -> Raf
+- Ras -> CdC42
+- PLC -> PKC
+- PKC -> Raf
+- CdC42 -> Rac
+- Rac -> Rho
+- Rho -> *Changes-in-gene-expression*
+- Raf -> MEK
+- Mos -> MEK
+- MEK -> MEKK
+- MEK -> MAPK
+- MAPK -> EIK
+- EIK -> Fos
+- Fos -> *Changes-in-gene-expression*
+- MAPK -> Myc:Max
+- MEKK -> Myc:Max
+- Myc + Max -> Myx:Max
+- Mad + Max -> Mad:Max
+- Myc:Max -| Mad:Max
+- Mad:Max -| Myc:Max
+- _MKKs_ -> MAPK
+- _MKKs_ -> _JNKs_
+- _JNKs_ -> Jun
+- Jun -> *Changes-in-gene-expression*
+- MAPK -> Jun
+
+** ECM Pathway
+- ECM + _Integrins_ -> FAK
+- ECM + _Integrins_ -> CdC42
+- ECM + _Integrins_ -> Fyn
+- CdC42 -> P13K
+- P13K -> Rac
+- Rac -> _JKKs_
+- FAK -> P13K
+- FAK -> Cas
+- Cas -> Crk
+- Crk -> _JKKs_
+
+
+
 
 
 
@@ -66,7 +188,3 @@ Muller, H., et al. (2001). E2Fs regulate the expression of genes involved in dif
 - Heldin, C., Miayazono, K., and Dijke, P. (1997). TGF-Beta signalling from cell membreane to nucleus through SMAD proteins.
 - Huelsken, J., and Juergen, B. (2000). The Wnt signalling pathway. J. Cell Sci. 113, 3545.
 - Muller, H., et al. (2001). E2Fs regulate the expression of genes involved in differentiation, development, proliferation, and apoptosis. Genes Dev., 15(3): 257-285.
-
-
-
-- Names. (date) title. journal issue, page-page.
