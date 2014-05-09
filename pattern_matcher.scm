@@ -97,8 +97,8 @@ match-multiple knowledge patterns dict matched_statements cont
 #|
 (pp "------------------------------------------")
 
-(load "simple_data/knowledge.scm")
-(load "simple_data/rules.scm")
+(load "data/simple/knowledge.scm")
+(load "data/simple/rules.scm")
 
 (define (on_match knowledge matched_statements new_statement)
   (pp (list "!!!!! on_match" matched_statements "=>" new_statement)))
