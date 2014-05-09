@@ -10,6 +10,7 @@
 (ie:add-knowledge2 knowledge)
 (ie:add-rules rules)
 
+
 ;(ie:is-true2 (list 'CAUSE (list "shooting guards" 'win)) '())
 (ie:infer '())
 (ie:print-knowledge)
