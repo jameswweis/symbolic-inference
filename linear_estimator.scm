@@ -30,9 +30,9 @@
   (pp corr)
   (le:generate-knowledge (le:relation corr) y x context)))
 
-(define (le:relation relation)
-  (cond ((> 0) 'CAUSE)
-        ((< 0) 'BLOCK)
+(define (le:relation correlation)
+  (cond ((> correlation 0) 'CAUSE)
+        ((< correlation 0) 'BLOCK)
         (else #f)))
 
 (define (le:generate-knowledge relation arg1 arg2 context)
