@@ -1,0 +1,5 @@
+e2fs    changes-in-gene-expressions
+20      399
+35      590
+34      628
+95      728

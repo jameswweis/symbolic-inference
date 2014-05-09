@@ -44,7 +44,8 @@
    (cons "topic" "Cell biology")
    (cons "journal" "Nature")
    (cons "pubmed" "9393997")
-   (cons "locations" (list "loc_a1" "loc_b1"))))
+   (cons "locations" (list "loc_a1" "loc_b1")))
+)
 
 (define knowledge
   (list
