@@ -1,9 +1,6 @@
 ;; Biological data
 
-;; (define compound_obj_aliases
-;;   (list
-;;    (cons "shooting guards" (list 'kobe 'wade 'mj 'jordan))
-;;    ))
+ (define compound_obj_aliases '())
 
 ;; (define simple-context
 ;;   (list
@@ -105,6 +102,7 @@
    '(CAUSE (Stat3 Changes-in-gene-expression) cytokine-context)
    '(CAUSE (Stat4 Changes-in-gene-expression) cytokine-context)
 
+#|
    ;; TGF-Beta Pathway
    '(CAUSE (TGF-Beta TGF-Beta-R TGF-Beta:TGF-Beta-R) tgfb-context)
    '(CAUSE (TGF-Beta:TGF-Beta-R SMADs) tgfb-context)
@@ -124,7 +122,7 @@
    '(CAUSE (SMADs p21) tgfb-context)
    '(CAUSE (Cyclin-E CDK2 Cyclin-E:CDK2) tgfb-context)
    '(BLOCK (p21 Cyclin-E:CDK2) tgfb-context)
-
+|#
 
 
    ))

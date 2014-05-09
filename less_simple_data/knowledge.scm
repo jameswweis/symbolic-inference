@@ -22,6 +22,6 @@
    (list 'DOWNREGULATE '(monster-2 monster-4) simple-context)
    ))
 
-(pp compound_obj_aliases)
-(pp knowledge)
+;(pp compound_obj_aliases)
+;(pp knowledge)
 (pp "knowledge done")
