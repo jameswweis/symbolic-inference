@@ -1,6 +1,4 @@
-(define compound_obj_aliases (list
-  (cons "shooting guards" (list 'kobe 'wade 'mj 'jordan))
-))
+(define compound_obj_aliases '())
 
 (define simple-context
   (list
