@@ -1,6 +1,4 @@
-(cd "lib")
 (load "load")
-(cd "..")
 
 #|
 //pm:match procedure
