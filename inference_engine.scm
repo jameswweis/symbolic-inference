@@ -3,14 +3,12 @@
 (load "load")
 (load "pattern_matcher")
 
-(load "simple_data/knowledge.scm")
-(load "simple_data/rules.scm")
 (define all-knowledge)
 (define all-rules)
 
 (define (ie:init)
-  (set! all-knowledge knowledge)
-  (set! all-rules rules)
+  (set! all-knowledge '())
+  (set! all-rules '())
   (set! compound_obj_aliases '()))
 
 (define (ie:has-statement knowledge new_knowledge)
@@ -21,6 +19,9 @@
       #f
       (or (equal? (statement-of new_knowledge) (statement-of (car knowledge)))
           (ie:has-statement (cdr knowledge) new_knowledge))))
+
+(define (ie:add-knowledge2 knowledge)
+  (set! all-knowledge (append all-knowledge knowledge)))
 
 (define (ie:add-knowledge new-knowledge)
   (if (not (ie:has-statement all-knowledge new-knowledge))
@@ -36,23 +37,49 @@
   (append! new-aliases compound_obj_aliases))
 
 (define (ie:add-rules new-rules)
-  (append! new-rules rules))
+  (set! all-rules (append all-rules new-rules)))
 
 (define (ie:print-knowledge)
   (pp all-knowledge))
 
+(define (ie:is-true2 statement context_predicate)
+  (ie:infer context_predicate)
+  (ie:print-knowledge))
+  ;(pp (ie:member statement all-knowledge)))
+
 (define (ie:is-true statement context_predicate)
   (ie:infer context_predicate)
-  
+
   (let ((matches_to_statement (ie:member statement all-knowledge)))
     (if (null? matches_to_statement)
       (pp "FALSE.")
       (if (= 1 (length matches_to_statement))
-        (pp (cons "TRUE! Your statement matches:" matches_to_statement))
+        (impressive-print matches_to_statement)
         (pp (cons "TRUE. Your statement matches multiple pieces of information in our database." matches_to_statement))
         )
       )
     ))
+
+(define (impressive-print matches)
+  (display "TRUE!\n")
+  (if (equal? "inferred_from" (car (car (cadr (cdr (car matches))))))
+    (ip:inferred (cdr (car (cadr (cdr (car matches)))))) 
+    (ip:original (cdr (car matches))))) 
+
+(define (ip:inferred statements)
+  (display "Your statement is correct and was inferred from\n")
+  (display "the following ") 
+  (display (/ (length statements) 3))
+  (display " statements:\n")
+  (pp statements)
+  )
+
+(define (ip:original statement)
+  (display "Your statement is correct and was inferred from\n")
+  (display "the following statement:\n") 
+  (pp statement)
+  )
+
 
 (define (ie:member statement current-knowledge)
   (ie:member-helper statement current-knowledge '()))
@@ -116,16 +143,15 @@
   (pm:match all-knowledge all-rules on_match compound_obj_aliases))
 
 ;; Tests
-(load "./simple_data/knowledge.scm")
+;(load "./simple_data/knowledge.scm")
 ;(pp knowledge)
 
-(ie:init)
 ;Value: ()
 
 ;(ie:print-knowledge)
 ; ()
 
-
+#|
 (define excess-knowledge (list
 (list 'CAUSE (list "shooting guards" 'score)
       (list
@@ -137,6 +163,7 @@
        (cons "journal" "journal1")
        (cons "pubmed" "pubmed1")
        (cons "locations" (list "loc_a1" "loc_b1"))))))
+|#
 ;Value: excess-knowledge
 
 
@@ -175,6 +202,10 @@
 
 ;(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
 ;(ie:is-true (list 'CAUSE (list 'rain 'water)) '())
-(ie:is-true (list 'CAUSE (list "shooting guards" 'win)) '())
+;(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
+;(ie:is-true (list 'CAUSE (list "shooting guards" 'win)) '())
+
+
+
 ; Expect to return true.
 

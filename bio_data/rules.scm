@@ -1,5 +1,6 @@
 (define rules
   (list
+
    ;; Rule 1: (a -> b) + (b -> c) -> (a -> c)
    (cons
     (list '(CAUSE (? a) (? b))
