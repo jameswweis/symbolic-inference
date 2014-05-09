@@ -68,7 +68,6 @@
           '(BLOCK (? c) (? d))
           '(BLOCK (? b) (? d) (? e)))
     '(CAUSE (? a) (? c) (? e)))
-
    ))
 
 (pp rules)
