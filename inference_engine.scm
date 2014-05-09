@@ -1,9 +1,6 @@
 ;;;; inference_engine.scm
 
-(cd "lib")
 (load "load")
-(cd "..")
-
 (load "pattern_matcher")
 
 (load "simple_data/knowledge.scm")
@@ -11,16 +8,22 @@
 (define all-knowledge)
 (define all-rules)
 
-(define (append-to-end! lst obj)
-  (set-cdr! (last-pair lst) (list obj)))
-
 (define (ie:init)
   (set! all-knowledge knowledge)
   (set! all-rules rules)
   (set! compound_obj_aliases '()))
 
+(define (ie:has-statement knowledge new_knowledge)
+  (define (statement-of k)
+    (cons (car k) (cadr k)))
+
+  (if (null? knowledge)
+      #f
+      (or (equal? (statement-of new_knowledge) (statement-of (car knowledge)))
+          (ie:has-statement (cdr knowledge) new_knowledge))))
+
 (define (ie:add-knowledge new-knowledge)
-  (if (not (member new-knowledge all-knowledge))
+  (if (not (ie:has-statement all-knowledge new-knowledge))
       (append-to-end! all-knowledge new-knowledge)))
 
 ;(define (ie:add-knowledge new-knowledge)
@@ -41,6 +44,7 @@
 (define (ie:is-true statement context_predicate)
   (ie:infer context_predicate)
   (pp "---------------------------------------------------")
+  ;(ie:print-knowledge))
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
@@ -86,7 +90,7 @@
 (define (ie:infer context_predicate)
 
   (define (on_match knowledge matched_statements new_statement)
-    (pp (list "!!!!! on_match" matched_statements "=>" new_statement))
+    ;(pp (list "!!!!! on_match" matched_statements "=>" new_statement))
     
     ; TODO: create knowledge from new statement and append! to knowledge
     
