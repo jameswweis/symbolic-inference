@@ -40,8 +40,15 @@
 
 (define (ie:is-true statement context_predicate)
   (ie:infer context_predicate)
-  (pp "---------------------------------------------------")
-  (pp (ie:member statement all-knowledge)))
+  (let ((matches_to_statement (ie:member statement all-knowledge)))
+    (if (null? matches_to_statement)
+      (pp "FALSE.")
+      (if (= 1 (length matches_to_statement))
+        (pp (cons "TRUE! Your statement matches:" matches_to_statement))
+        (pp (cons "TRUE. Your statement matches multiple pieces of information in our database." matches_to_statement))
+        )
+      )
+    ))
 
 (define (ie:member statement current-knowledge)
   (ie:member-helper statement current-knowledge '()))
