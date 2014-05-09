@@ -12,7 +12,7 @@
 (ie:add-aliases compound_obj_aliases)
 (ie:add-rules rules)
 
-(ie:is-true (list 'CAUSE (list "shooting guards" 'win)) '())
+(ie:is-true '(CAUSE ("shooting guards" win)) '())
 ;(ie:infer '())
 ;(ie:print-knowledge)
 

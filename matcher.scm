@@ -1,5 +1,8 @@
-;;;; Matcher based on match combinators, CPH/GJS style.
-;;;     Idea is in Hewitt's PhD thesis (1969).
+;;;; modified version of GJS matcher that does comparison with aliases
+#|
+Interface (beyond regular matching):
+- (match:set-compound_obj_aliases! x)
+|#
 
 (declare (usual-integrations))
 
@@ -35,6 +38,9 @@
             (else (equal? dict_val data))
       )
   ))
+
+;;;; Matcher based on match combinators, CPH/GJS style.
+;;;     Idea is in Hewitt's PhD thesis (1969).
 
 ;;; There are match procedures that can be applied to data items.  A
 ;;; match procedure either accepts or rejects the data it is applied
