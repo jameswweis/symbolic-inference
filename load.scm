@@ -9,8 +9,8 @@
 
 (define call/cc call-with-current-continuation)
 
-(define (writeln x)
-  (write x)(newline))
+(define (displayln x)
+  (display x)(newline))
 
 ; for-each on a single list with reversed argument order
 (define (for-each2 lst procedure)
