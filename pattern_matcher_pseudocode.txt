@@ -1,0 +1,54 @@
+;;;; pattern_matcher_pseudocode.txt
+
+//pm:match procedure
+pm:match knowledge rules on_match_handler
+  for each rule:
+    get patterns, new_statement_pattern
+    
+    continuation (newdict matched_statements): 
+      new_statement = substitute newdict into new_statement_pattern
+      on_match_handler (knowledge new_statement)
+      return #f
+    
+    match-multiple knowledge patterns '() '() continuation
+    
+  keep going until no more new knowledge added
+  
+//pm:match-multiple: like match-combinators, except it will match 
+match-multiple knowledge patterns dict matched_statements cont
+  if no patterns
+    return (cont dict matched_statements)
+  else    
+    for each statement in knowledge
+      (define (match-combinators-cont newdict n))
+        (match-multiple knowledge (cdr patterns) newdict (append matched_statements statement) cont))
+    
+      x = match-combinators (car patterns) statement dict match-combinators-cont
+      if x != false
+        return x  //breaks
+    return #f
+
+
+
+;;; matcher.scm examples
+
+#|
+((match:->combinators '(a (?? x) (?? y) (?? x) c))
+ '((a b b b b b b c))
+ '()
+ (lambda (dict n)
+   (pp `(succeed ,dict))
+   #f))
+;(succeed ((y (b b b b b b)) (x ())))
+;(succeed ((y (b b b b)) (x (b))))
+;(succeed ((y (b b)) (x (b b))))
+;(succeed ((y ()) (x (b b b))))
+;Value: #f
+
+((match:->combinators '(cause (? a) (? b)))
+ '((cause score point))   ; <- need extra parenthesis!
+ '()
+ (lambda (dict n)
+   (pp `(succeed ,dict))
+   #f))
+|#

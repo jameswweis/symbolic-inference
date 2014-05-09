@@ -47,22 +47,27 @@
       (ie:add-knowledge-in-place new_knowledge)))
     
   (pm:match all-knowledge all-rules on_match all-compound_obj_aliases))
-  
-;;; ie:infer helpers
+ 
+; 
+; ie:infer helpers
+;
 
 (define (ie:has-statement knowledge new_knowledge)
   (define (statement-of k)
     (cons (car k) (cadr k)))
 
-  (if (null? knowledge) #f
-      (or (equal? (statement-of new_knowledge) (statement-of (car knowledge)))
-          (ie:has-statement (cdr knowledge) new_knowledge))))
+  (if (null? knowledge)
+    #f
+    (or (equal? (statement-of new_knowledge) (statement-of (car knowledge)))
+        (ie:has-statement (cdr knowledge) new_knowledge))))
 
 (define (ie:add-knowledge-in-place new-knowledge)
   (if (not (ie:has-statement all-knowledge new-knowledge))
       (append-to-end! all-knowledge new-knowledge)))
 
-;;; ie:is-true helpers
+;
+; ie:is-true helpers
+;
 
 (define (impressive-print matches)
   (displayln "TRUE")
@@ -85,13 +90,13 @@
 
 (define (ie:eq-arg? sArg kArg)
   (if (not (list? all-compound_obj_aliases))
-      (equal? sArg kArg)
-      (cond ((string? kArg) (equal? kArg sArg))
-            ((symbol? kArg)
-              (let ((alias_list (assoc sArg all-compound_obj_aliases)))
-                (or (equal? kArg sArg)
-                    (and alias_list (memq? kArg (cdr alias_list)) ))))
-            (else (equal? kArg sArg)))))
+    (equal? sArg kArg)
+    (cond ((string? kArg) (equal? kArg sArg))
+          ((symbol? kArg)
+            (let ((alias_list (assoc sArg all-compound_obj_aliases)))
+              (or (equal? kArg sArg)
+                  (and alias_list (memq? kArg (cdr alias_list)) ))))
+          (else (equal? kArg sArg)))))
 
 (define (ie:eq-args? args1 args2)
   (cond ((and (null? args1) (null? args2)) #t)

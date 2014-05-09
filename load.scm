@@ -1,11 +1,4 @@
-;;; load.scm
-
-; load lib/
-(cd "lib")
-(load "load")
-(cd "..")
-
-; Utilities
+;;;; load.scm
 
 (define call/cc call-with-current-continuation)
 
