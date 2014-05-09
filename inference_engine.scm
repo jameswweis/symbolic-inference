@@ -43,16 +43,37 @@
 
 (define (ie:is-true statement context_predicate)
   (ie:infer context_predicate)
-  
+
   (let ((matches_to_statement (ie:member statement all-knowledge)))
     (if (null? matches_to_statement)
       (pp "FALSE.")
       (if (= 1 (length matches_to_statement))
-        (pp (cons "TRUE! Your statement matches:" matches_to_statement))
+        (impressive-print matches_to_statement)
         (pp (cons "TRUE. Your statement matches multiple pieces of information in our database." matches_to_statement))
         )
       )
     ))
+
+(define (impressive-print matches)
+  (display "TRUE!\n")
+  (if (equal? "inferred_from" (car (car (cadr (cdr (car matches))))))
+    (ip:inferred (cdr (car (cadr (cdr (car matches)))))) 
+    (ip:original (cdr (car matches))))) 
+
+(define (ip:inferred statements)
+  (display "Your statement is correct and was inferred from\n")
+  (display "the following ") 
+  (display (/ (length statements) 3))
+  (display " statements:\n")
+  (pp statements)
+  )
+
+(define (ip:original statement)
+  (display "Your statement is correct and was inferred from\n")
+  (display "the following statement:\n") 
+  (pp statement)
+  )
+
 
 (define (ie:member statement current-knowledge)
   (ie:member-helper statement current-knowledge '()))
@@ -175,6 +196,8 @@
 
 ;(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
 ;(ie:is-true (list 'CAUSE (list 'rain 'water)) '())
-(ie:is-true (list 'CAUSE (list "shooting guards" 'win)) '())
+(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
+
+
 ; Expect to return true.
 
