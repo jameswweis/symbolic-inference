@@ -11,16 +11,23 @@
 (define all-knowledge)
 (define all-rules)
 
+(define (append-to-end! lst obj)
+  (set-cdr! (last-pair lst) (list obj)))
+
 (define (ie:init)
   (set! all-knowledge knowledge)
   (set! all-rules rules)
   (set! compound_obj_aliases '()))
 
-
 (define (ie:add-knowledge new-knowledge)
-  (let ((filtered-new-knowledge
-         (filter (lambda (x) (not (member x all-knowledge))) new-knowledge)))
-    (set! all-knowledge (append all-knowledge filtered-new-knowledge))))
+  (if (not (member new-knowledge all-knowledge))
+      (append-to-end! all-knowledge new-knowledge)))
+
+;(define (ie:add-knowledge new-knowledge)
+  ;(let ((filtered-new-knowledge
+  ;       (filter (lambda (x) (not (member x all-knowledge))) new-knowledge)))
+  ;  (set! all-knowledge (append all-knowledge filtered-new-knowledge))
+  ;  ))
 
 (define (ie:add-aliases new-aliases)
   (append! new-aliases compound_obj_aliases))
@@ -33,6 +40,7 @@
 
 (define (ie:is-true statement context_predicate)
   (ie:infer context_predicate)
+  (pp "---------------------------------------------------")
   (pp (ie:member statement all-knowledge)))
 
 (define (ie:member statement current-knowledge)
@@ -82,8 +90,18 @@
     
     ; TODO: create knowledge from new statement and append! to knowledge
     
-    )
-
+    (let* (
+      (new_type (car new_statement))
+      (new_args (cdr new_statement))
+      (new_knowledge    
+        (list new_type new_args (list
+        (cons "inferred_from" matched_statements)
+        ))
+      ))
+    ;(append-to-end! knowledge new_knowledge)
+    (ie:add-knowledge new_knowledge)
+    ))
+    
   (pm:match all-knowledge all-rules on_match compound_obj_aliases))
 
 ;; Tests
@@ -144,6 +162,8 @@
 ;;    ("pubmed" . "pubmed1")
 ;;    ("locations" "loc_a1" "loc_b1"))))
 
-(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
+;(ie:is-true (list 'CAUSE (list 'lakers 'kobe)) '())
+;(ie:is-true (list 'CAUSE (list 'rain 'water)) '())
+(ie:is-true (list 'CAUSE (list "shooting guards" 'win)) '())
 ; Expect to return true.
 
