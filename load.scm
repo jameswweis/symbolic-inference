@@ -1,5 +1,6 @@
-; load lib/
+;;; load.scm
 
+; load lib/
 (cd "lib")
 (load "load")
 (cd "..")
@@ -8,9 +9,13 @@
 
 (define call/cc call-with-current-continuation)
 
+(define (writeln x)
+  (write x)(newline))
+
 ; for-each on a single list with reversed argument order
 (define (for-each2 lst procedure)
   (for-each procedure lst))
-  
+
+; append obj to lst in place (mutates list)
 (define (append-to-end! lst obj)
   (set-cdr! (last-pair lst) (list obj)))

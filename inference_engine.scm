@@ -5,42 +5,42 @@
 
 (define all-knowledge)
 (define all-rules)
+(define all-compound_obj_aliases)
 
 (define (ie:init)
   (set! all-knowledge '())
   (set! all-rules '())
-  (set! compound_obj_aliases '()))
+  (set! all-compound_obj_aliases '()))
+
+(define (ie:add-knowledge knowledge)
+  (set! all-knowledge (append all-knowledge knowledge)))
+  
+(define (ie:add-aliases new-aliases)
+  (set! all-compound_obj_aliases (append all-compound_obj_aliases new-aliases)))
+
+(define (ie:add-rules new-rules)
+  (set! all-rules (append all-rules new-rules)))
+  
+(define (ie:print-knowledge)
+  (pp all-knowledge))
+
+
 
 (define (ie:has-statement knowledge new_knowledge)
   (define (statement-of k)
     (cons (car k) (cadr k)))
 
-  (if (null? knowledge)
-      #f
+  (if (null? knowledge) #f
       (or (equal? (statement-of new_knowledge) (statement-of (car knowledge)))
           (ie:has-statement (cdr knowledge) new_knowledge))))
 
-(define (ie:add-knowledge2 knowledge)
-  (set! all-knowledge (append all-knowledge knowledge)))
-
-(define (ie:add-knowledge new-knowledge)
+(define (ie:add-knowledge-in-place new-knowledge)
   (if (not (ie:has-statement all-knowledge new-knowledge))
       (append-to-end! all-knowledge new-knowledge)))
 
-;(define (ie:add-knowledge new-knowledge)
-  ;(let ((filtered-new-knowledge
-  ;       (filter (lambda (x) (not (member x all-knowledge))) new-knowledge)))
-  ;  (set! all-knowledge (append all-knowledge filtered-new-knowledge))
-  ;  ))
 
-(define (ie:add-aliases new-aliases)
-  (append! new-aliases compound_obj_aliases))
 
-(define (ie:add-rules new-rules)
-  (set! all-rules (append all-rules new-rules)))
 
-(define (ie:print-knowledge)
-  (pp all-knowledge))
 
 (define (ie:is-true2 statement context_predicate)
   (ie:infer context_predicate)
@@ -52,7 +52,7 @@
 
   (let ((matches_to_statement (ie:member statement all-knowledge)))
     (if (null? matches_to_statement)
-      (pp "FALSE.")
+      (writeln "FALSE.")
       (if (= 1 (length matches_to_statement))
         (impressive-print matches_to_statement)
         (pp (cons "TRUE. Your statement matches multiple pieces of information in our database." matches_to_statement))
@@ -85,14 +85,14 @@
   (ie:member-helper statement current-knowledge '()))
 
 (define (ie:eq-arg? sArg kArg)
-  (if (not (list? compound_obj_aliases))
+  (if (not (list? all-compound_obj_aliases))
       ; true
       (equal? sArg kArg)
       
       ; false
       (cond ((string? kArg) (equal? kArg sArg))
             ((symbol? kArg)
-              (let ((alias_list (assoc sArg compound_obj_aliases)))
+              (let ((alias_list (assoc sArg all-compound_obj_aliases)))
                 (or (equal? kArg sArg)
                      (and alias_list (memq? kArg (cdr alias_list)) ))))
             (else (equal? kArg sArg))
@@ -137,10 +137,10 @@
         ))
       ))
     ;(append-to-end! knowledge new_knowledge)
-    (ie:add-knowledge new_knowledge)
+    (ie:add-knowledge-in-place new_knowledge)
     ))
     
-  (pm:match all-knowledge all-rules on_match compound_obj_aliases))
+  (pm:match all-knowledge all-rules on_match all-compound_obj_aliases))
 
 ;; Tests
 ;(load "./data/simple/knowledge.scm")
