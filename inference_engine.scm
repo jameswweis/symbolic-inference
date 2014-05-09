@@ -143,7 +143,7 @@
   (pm:match all-knowledge all-rules on_match compound_obj_aliases))
 
 ;; Tests
-;(load "./simple_data/knowledge.scm")
+;(load "./data/simple/knowledge.scm")
 ;(pp knowledge)
 
 ;Value: ()

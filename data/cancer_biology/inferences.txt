@@ -1,0 +1,2121 @@
+
+;Loading "inference_engine.scm"...
+;  Loading "load.scm"...
+;    Loading "load.scm"...
+;      Loading "ghelper.scm"... done
+;      Loading "matcher.scm"... done
+;    ... done
+;  ... done
+;  Loading "pattern_matcher.scm"...
+;    Loading "load.scm"...
+;      Loading "load.scm"...
+;        Loading "ghelper.scm"... done
+;        Loading "matcher.scm"... done
+;      ... done
+;    ... done
+;  ... done
+;... done
+;Loading "data/cancer_biology/knowledge.scm"...()
+((cause (wnt frizzled wnt:frizzled) wnt-pathway-context)
+ (cause (wnt:frizzled dishevelled) wnt-pathway-context)
+ (cause (dishevelled gsk-3beta) wnt-pathway-context)
+ (cause (gsk-3beta apc) wnt-pathway-context)
+ (cause (apc beta-cetenin) wnt-pathway-context)
+ (cause (other-cell e-cadherin beta-catenin) wnt-pathway-context)
+ (cause (beta-catenin tcf beta-catenin:tcf) wnt-pathway-context)
+ (cause (beta-catenin:tcf changes-in-gene-expression))
+ (cause (estrogen er) hormone-context)
+ (cause (er changes-in-gene-expression) hormone-context)
+ (cause (bombesin 7-tmr g-protein) hormone-context)
+ (cause (g-protein ad-cyclin) hormone-context)
+ (cause (ad-cyclin pka) hormone-context)
+ (cause (pka creb) hormone-context)
+ (cause (creb changes-in-gene-expression) hormone-context)
+ (cause (cytokines cytokine-r jaks) cytokine-context)
+ (cause (jaks stat3) cytokine-context)
+ (cause (jaks stat5) cytokine-context)
+ (cause (stat3 bclxl) cytokine-context)
+ (cause (stat5 bclxl) cytokine-context)
+ (cause (stat3 changes-in-gene-expression) cytokine-context)
+ (cause (stat4 changes-in-gene-expression) cytokine-context)
+ (cause (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r) tgfb-context)
+ (cause (tgf-beta:tgf-beta-r smads) tgfb-context)
+ (cause (smads p15) tgfb-context)
+ (cause (cyclin-d cdk4 cyclin-d:cdk4) tgfb-context)
+ (block (p16 cyclin-d:cdk4) tgfb-context)
+ (block (p15 cyclin-d:cdk4) tgfb-context)
+ (block (cyclin-d:cdk4 rb) tgfb-context)
+ (block (hpv-e7 rb) tgfb-context)
+ (block (rb e2fs) tgfb-context)
+ (block (e2fs changes-in-gene-expression) tgfb-context)
+ (cause (smads p27) tgfb-context)
+ (cause (cyclin-e cdk2 cyclin-e:cdk2) tgfb-context)
+ (block (p27 cyclin-e:cdk2) tgfb-context)
+ (cause (cyclin-e:cdk2 cell-proliferation) tgfb-context)
+ (cause (changes-in-gene-expression cyclin-e:cdk2) tgfb-context)
+ (cause (smads p21) tgfb-context)
+ (cause (cyclin-e cdk2 cyclin-e:cdk2) tgfb-context)
+ (block (p21 cyclin-e:cdk2) tgfb-context))
+"knowledge done"
+;... done
+;Loading "data/cancer_biology/rules.scm"...((((cause (? a) (? b)) (cause (? b) (? c))) cause (? a) (? c))
+ (((block (? a) (? b)) (block (? b) (? c))) cause (? a) (? c))
+ (((cause (? a) (? b)) (block (? b) (? c))) block (? a) (? c))
+ (((block (? a) (? b)) (cause (? b) (? c))) block (? a) (? c))
+ (((block (? a) (? b)) (cause (? b) (? c))) block (? a) (? c))
+ (((cause (? a) (? b) (? c)) (cause (? c) (? d))) cause (? a) (? b) (? d))
+ (((cause (? a) (? b) (? c)) (block (? c) (? d))) block (? a) (? b) (? d))
+ (((cause (? a) (? b) (? c)) (block (? c) (? d))) block (? a) (? b) (? d))
+ (((cause (? a) (? b)) (cause (? c) (? d)) (cause (? b) (? d) (? e))) block
+                                                                      (? a)
+                                                                      (? c)
+                                                                      (? e))
+ (((block (? a) (? b)) (cause (? b) (? d) (? e))) block (? a) (? e))
+ (((blok (? a) (? b)) (block (? c) (? d)) (block (? b) (? d) (? e))) cause
+                                                                     (? a)
+                                                                     (? c)
+                                                                     (? e)))
+"rules done"
+;... done
+((cause (wnt frizzled wnt:frizzled) wnt-pathway-context)
+ (cause (wnt:frizzled dishevelled) wnt-pathway-context)
+ (cause (dishevelled gsk-3beta) wnt-pathway-context)
+ (cause (gsk-3beta apc) wnt-pathway-context)
+ (cause (apc beta-cetenin) wnt-pathway-context)
+ (cause (other-cell e-cadherin beta-catenin) wnt-pathway-context)
+ (cause (beta-catenin tcf beta-catenin:tcf) wnt-pathway-context)
+ (cause (beta-catenin:tcf changes-in-gene-expression))
+ (cause (estrogen er) hormone-context)
+ (cause (er changes-in-gene-expression) hormone-context)
+ (cause (bombesin 7-tmr g-protein) hormone-context)
+ (cause (g-protein ad-cyclin) hormone-context)
+ (cause (ad-cyclin pka) hormone-context)
+ (cause (pka creb) hormone-context)
+ (cause (creb changes-in-gene-expression) hormone-context)
+ (cause (cytokines cytokine-r jaks) cytokine-context)
+ (cause (jaks stat3) cytokine-context)
+ (cause (jaks stat5) cytokine-context)
+ (cause (stat3 bclxl) cytokine-context)
+ (cause (stat5 bclxl) cytokine-context)
+ (cause (stat3 changes-in-gene-expression) cytokine-context)
+ (cause (stat4 changes-in-gene-expression) cytokine-context)
+ (cause (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r) tgfb-context)
+ (cause (tgf-beta:tgf-beta-r smads) tgfb-context)
+ (cause (smads p15) tgfb-context)
+ (cause (cyclin-d cdk4 cyclin-d:cdk4) tgfb-context)
+ (block (p16 cyclin-d:cdk4) tgfb-context)
+ (block (p15 cyclin-d:cdk4) tgfb-context)
+ (block (cyclin-d:cdk4 rb) tgfb-context)
+ (block (hpv-e7 rb) tgfb-context)
+ (block (rb e2fs) tgfb-context)
+ (block (e2fs changes-in-gene-expression) tgfb-context)
+ (cause (smads p27) tgfb-context)
+ (cause (cyclin-e cdk2 cyclin-e:cdk2) tgfb-context)
+ (block (p27 cyclin-e:cdk2) tgfb-context)
+ (cause (cyclin-e:cdk2 cell-proliferation) tgfb-context)
+ (cause (changes-in-gene-expression cyclin-e:cdk2) tgfb-context)
+ (cause (smads p21) tgfb-context)
+ (cause (cyclin-e cdk2 cyclin-e:cdk2) tgfb-context)
+ (block (p21 cyclin-e:cdk2) tgfb-context)
+ (cause
+  (wnt:frizzled gsk-3beta)
+  (("inferred_from" cause
+                    (wnt:frizzled dishevelled)
+                    wnt-pathway-context
+                    cause
+                    (dishevelled gsk-3beta)
+                    wnt-pathway-context)))
+ (cause
+  (dishevelled apc)
+  (("inferred_from" cause
+                    (dishevelled gsk-3beta)
+                    wnt-pathway-context
+                    cause
+                    (gsk-3beta apc)
+                    wnt-pathway-context)))
+ (cause
+  (gsk-3beta beta-cetenin)
+  (("inferred_from" cause
+                    (gsk-3beta apc)
+                    wnt-pathway-context
+                    cause
+                    (apc beta-cetenin)
+                    wnt-pathway-context)))
+ (cause
+  (beta-catenin:tcf cyclin-e:cdk2)
+  (("inferred_from" cause
+                    (beta-catenin:tcf changes-in-gene-expression)
+                    cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context)))
+ (cause
+  (estrogen changes-in-gene-expression)
+  (("inferred_from" cause
+                    (estrogen er)
+                    hormone-context
+                    cause
+                    (er changes-in-gene-expression)
+                    hormone-context)))
+ (cause
+  (er cyclin-e:cdk2)
+  (("inferred_from" cause
+                    (er changes-in-gene-expression)
+                    hormone-context
+                    cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context)))
+ (cause
+  (g-protein pka)
+  (("inferred_from" cause
+                    (g-protein ad-cyclin)
+                    hormone-context
+                    cause
+                    (ad-cyclin pka)
+                    hormone-context)))
+ (cause
+  (ad-cyclin creb)
+  (("inferred_from" cause
+                    (ad-cyclin pka)
+                    hormone-context
+                    cause
+                    (pka creb)
+                    hormone-context)))
+ (cause
+  (pka changes-in-gene-expression)
+  (("inferred_from" cause
+                    (pka creb)
+                    hormone-context
+                    cause
+                    (creb changes-in-gene-expression)
+                    hormone-context)))
+ (cause
+  (creb cyclin-e:cdk2)
+  (("inferred_from" cause
+                    (creb changes-in-gene-expression)
+                    hormone-context
+                    cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context)))
+ (cause
+  (jaks bclxl)
+  (("inferred_from" cause
+                    (jaks stat3)
+                    cytokine-context
+                    cause
+                    (stat3 bclxl)
+                    cytokine-context)))
+ (cause
+  (jaks changes-in-gene-expression)
+  (("inferred_from" cause
+                    (jaks stat3)
+                    cytokine-context
+                    cause
+                    (stat3 changes-in-gene-expression)
+                    cytokine-context)))
+ (cause
+  (stat3 cyclin-e:cdk2)
+  (("inferred_from" cause
+                    (stat3 changes-in-gene-expression)
+                    cytokine-context
+                    cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context)))
+ (cause
+  (stat4 cyclin-e:cdk2)
+  (("inferred_from" cause
+                    (stat4 changes-in-gene-expression)
+                    cytokine-context
+                    cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context)))
+ (cause
+  (tgf-beta:tgf-beta-r p15)
+  (("inferred_from" cause
+                    (tgf-beta:tgf-beta-r smads)
+                    tgfb-context
+                    cause
+                    (smads p15)
+                    tgfb-context)))
+ (cause
+  (tgf-beta:tgf-beta-r p27)
+  (("inferred_from" cause
+                    (tgf-beta:tgf-beta-r smads)
+                    tgfb-context
+                    cause
+                    (smads p27)
+                    tgfb-context)))
+ (cause
+  (tgf-beta:tgf-beta-r p21)
+  (("inferred_from" cause
+                    (tgf-beta:tgf-beta-r smads)
+                    tgfb-context
+                    cause
+                    (smads p21)
+                    tgfb-context)))
+ (cause
+  (changes-in-gene-expression cell-proliferation)
+  (("inferred_from" cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context
+                    cause
+                    (cyclin-e:cdk2 cell-proliferation)
+                    tgfb-context)))
+ (cause
+  (wnt:frizzled apc)
+  (("inferred_from"
+    cause
+    (wnt:frizzled gsk-3beta)
+    (("inferred_from" cause
+                      (wnt:frizzled dishevelled)
+                      wnt-pathway-context
+                      cause
+                      (dishevelled gsk-3beta)
+                      wnt-pathway-context))
+    cause
+    (gsk-3beta apc)
+    wnt-pathway-context)))
+ (cause
+  (wnt:frizzled beta-cetenin)
+  (("inferred_from"
+    cause
+    (wnt:frizzled gsk-3beta)
+    (("inferred_from" cause
+                      (wnt:frizzled dishevelled)
+                      wnt-pathway-context
+                      cause
+                      (dishevelled gsk-3beta)
+                      wnt-pathway-context))
+    cause
+    (gsk-3beta beta-cetenin)
+    (("inferred_from" cause
+                      (gsk-3beta apc)
+                      wnt-pathway-context
+                      cause
+                      (apc beta-cetenin)
+                      wnt-pathway-context)))))
+ (cause
+  (dishevelled beta-cetenin)
+  (("inferred_from"
+    cause
+    (dishevelled apc)
+    (("inferred_from" cause
+                      (dishevelled gsk-3beta)
+                      wnt-pathway-context
+                      cause
+                      (gsk-3beta apc)
+                      wnt-pathway-context))
+    cause
+    (apc beta-cetenin)
+    wnt-pathway-context)))
+ (cause
+  (beta-catenin:tcf cell-proliferation)
+  (("inferred_from"
+    cause
+    (beta-catenin:tcf cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (beta-catenin:tcf changes-in-gene-expression)
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (cause
+  (estrogen cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (estrogen changes-in-gene-expression)
+    (("inferred_from" cause
+                      (estrogen er)
+                      hormone-context
+                      cause
+                      (er changes-in-gene-expression)
+                      hormone-context))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (estrogen cell-proliferation)
+  (("inferred_from"
+    cause
+    (estrogen changes-in-gene-expression)
+    (("inferred_from" cause
+                      (estrogen er)
+                      hormone-context
+                      cause
+                      (er changes-in-gene-expression)
+                      hormone-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (er cell-proliferation)
+  (("inferred_from"
+    cause
+    (er cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (er changes-in-gene-expression)
+                      hormone-context
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (cause
+  (g-protein creb)
+  (("inferred_from"
+    cause
+    (g-protein pka)
+    (("inferred_from" cause
+                      (g-protein ad-cyclin)
+                      hormone-context
+                      cause
+                      (ad-cyclin pka)
+                      hormone-context))
+    cause
+    (pka creb)
+    hormone-context)))
+ (cause
+  (g-protein changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (g-protein pka)
+    (("inferred_from" cause
+                      (g-protein ad-cyclin)
+                      hormone-context
+                      cause
+                      (ad-cyclin pka)
+                      hormone-context))
+    cause
+    (pka changes-in-gene-expression)
+    (("inferred_from" cause
+                      (pka creb)
+                      hormone-context
+                      cause
+                      (creb changes-in-gene-expression)
+                      hormone-context)))))
+ (cause
+  (ad-cyclin changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (ad-cyclin creb)
+    (("inferred_from" cause
+                      (ad-cyclin pka)
+                      hormone-context
+                      cause
+                      (pka creb)
+                      hormone-context))
+    cause
+    (creb changes-in-gene-expression)
+    hormone-context)))
+ (cause
+  (ad-cyclin cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (ad-cyclin creb)
+    (("inferred_from" cause
+                      (ad-cyclin pka)
+                      hormone-context
+                      cause
+                      (pka creb)
+                      hormone-context))
+    cause
+    (creb cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (creb changes-in-gene-expression)
+                      hormone-context
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context)))))
+ (cause
+  (pka cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (pka changes-in-gene-expression)
+    (("inferred_from" cause
+                      (pka creb)
+                      hormone-context
+                      cause
+                      (creb changes-in-gene-expression)
+                      hormone-context))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (pka cell-proliferation)
+  (("inferred_from"
+    cause
+    (pka changes-in-gene-expression)
+    (("inferred_from" cause
+                      (pka creb)
+                      hormone-context
+                      cause
+                      (creb changes-in-gene-expression)
+                      hormone-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (creb cell-proliferation)
+  (("inferred_from"
+    cause
+    (creb cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (creb changes-in-gene-expression)
+                      hormone-context
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (cause
+  (jaks cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (jaks changes-in-gene-expression)
+    (("inferred_from" cause
+                      (jaks stat3)
+                      cytokine-context
+                      cause
+                      (stat3 changes-in-gene-expression)
+                      cytokine-context))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (jaks cell-proliferation)
+  (("inferred_from"
+    cause
+    (jaks changes-in-gene-expression)
+    (("inferred_from" cause
+                      (jaks stat3)
+                      cytokine-context
+                      cause
+                      (stat3 changes-in-gene-expression)
+                      cytokine-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (stat3 cell-proliferation)
+  (("inferred_from"
+    cause
+    (stat3 cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (stat3 changes-in-gene-expression)
+                      cytokine-context
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (cause
+  (stat4 cell-proliferation)
+  (("inferred_from"
+    cause
+    (stat4 cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (stat4 changes-in-gene-expression)
+                      cytokine-context
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (cause
+  (g-protein cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (g-protein creb)
+    (("inferred_from"
+      cause
+      (g-protein pka)
+      (("inferred_from" cause
+                        (g-protein ad-cyclin)
+                        hormone-context
+                        cause
+                        (ad-cyclin pka)
+                        hormone-context))
+      cause
+      (pka creb)
+      hormone-context))
+    cause
+    (creb cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (creb changes-in-gene-expression)
+                      hormone-context
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context)))))
+ (cause
+  (g-protein cell-proliferation)
+  (("inferred_from"
+    cause
+    (g-protein creb)
+    (("inferred_from"
+      cause
+      (g-protein pka)
+      (("inferred_from" cause
+                        (g-protein ad-cyclin)
+                        hormone-context
+                        cause
+                        (ad-cyclin pka)
+                        hormone-context))
+      cause
+      (pka creb)
+      hormone-context))
+    cause
+    (creb cell-proliferation)
+    (("inferred_from"
+      cause
+      (creb cyclin-e:cdk2)
+      (("inferred_from" cause
+                        (creb changes-in-gene-expression)
+                        hormone-context
+                        cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context))
+      cause
+      (cyclin-e:cdk2 cell-proliferation)
+      tgfb-context)))))
+ (cause
+  (ad-cyclin cell-proliferation)
+  (("inferred_from"
+    cause
+    (ad-cyclin changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (ad-cyclin creb)
+      (("inferred_from" cause
+                        (ad-cyclin pka)
+                        hormone-context
+                        cause
+                        (pka creb)
+                        hormone-context))
+      cause
+      (creb changes-in-gene-expression)
+      hormone-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (p16 rb)
+  (("inferred_from" block
+                    (p16 cyclin-d:cdk4)
+                    tgfb-context
+                    block
+                    (cyclin-d:cdk4 rb)
+                    tgfb-context)))
+ (cause
+  (p15 rb)
+  (("inferred_from" block
+                    (p15 cyclin-d:cdk4)
+                    tgfb-context
+                    block
+                    (cyclin-d:cdk4 rb)
+                    tgfb-context)))
+ (cause
+  (cyclin-d:cdk4 e2fs)
+  (("inferred_from" block
+                    (cyclin-d:cdk4 rb)
+                    tgfb-context
+                    block
+                    (rb e2fs)
+                    tgfb-context)))
+ (cause
+  (hpv-e7 e2fs)
+  (("inferred_from" block
+                    (hpv-e7 rb)
+                    tgfb-context
+                    block
+                    (rb e2fs)
+                    tgfb-context)))
+ (cause
+  (rb changes-in-gene-expression)
+  (("inferred_from" block
+                    (rb e2fs)
+                    tgfb-context
+                    block
+                    (e2fs changes-in-gene-expression)
+                    tgfb-context)))
+ (block
+  (smads cyclin-d:cdk4)
+  (("inferred_from" cause
+                    (smads p15)
+                    tgfb-context
+                    block
+                    (p15 cyclin-d:cdk4)
+                    tgfb-context)))
+ (block
+  (smads cyclin-e:cdk2)
+  (("inferred_from" cause
+                    (smads p27)
+                    tgfb-context
+                    block
+                    (p27 cyclin-e:cdk2)
+                    tgfb-context)))
+ (block
+  (tgf-beta:tgf-beta-r cyclin-d:cdk4)
+  (("inferred_from"
+    cause
+    (tgf-beta:tgf-beta-r p15)
+    (("inferred_from" cause
+                      (tgf-beta:tgf-beta-r smads)
+                      tgfb-context
+                      cause
+                      (smads p15)
+                      tgfb-context))
+    block
+    (p15 cyclin-d:cdk4)
+    tgfb-context)))
+ (block
+  (tgf-beta:tgf-beta-r cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (tgf-beta:tgf-beta-r p27)
+    (("inferred_from" cause
+                      (tgf-beta:tgf-beta-r smads)
+                      tgfb-context
+                      cause
+                      (smads p27)
+                      tgfb-context))
+    block
+    (p27 cyclin-e:cdk2)
+    tgfb-context)))
+ (block
+  (p16 e2fs)
+  (("inferred_from"
+    cause
+    (p16 rb)
+    (("inferred_from" block
+                      (p16 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context))
+    block
+    (rb e2fs)
+    tgfb-context)))
+ (block
+  (p15 e2fs)
+  (("inferred_from"
+    cause
+    (p15 rb)
+    (("inferred_from" block
+                      (p15 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context))
+    block
+    (rb e2fs)
+    tgfb-context)))
+ (block
+  (cyclin-d:cdk4 changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (cyclin-d:cdk4 e2fs)
+    (("inferred_from" block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context
+                      block
+                      (rb e2fs)
+                      tgfb-context))
+    block
+    (e2fs changes-in-gene-expression)
+    tgfb-context)))
+ (block
+  (hpv-e7 changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (hpv-e7 e2fs)
+    (("inferred_from" block
+                      (hpv-e7 rb)
+                      tgfb-context
+                      block
+                      (rb e2fs)
+                      tgfb-context))
+    block
+    (e2fs changes-in-gene-expression)
+    tgfb-context)))
+ (block
+  (e2fs cyclin-e:cdk2)
+  (("inferred_from" block
+                    (e2fs changes-in-gene-expression)
+                    tgfb-context
+                    cause
+                    (changes-in-gene-expression cyclin-e:cdk2)
+                    tgfb-context)))
+ (block
+  (e2fs cell-proliferation)
+  (("inferred_from"
+    block
+    (e2fs changes-in-gene-expression)
+    tgfb-context
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (block
+  (p27 cell-proliferation)
+  (("inferred_from" block
+                    (p27 cyclin-e:cdk2)
+                    tgfb-context
+                    cause
+                    (cyclin-e:cdk2 cell-proliferation)
+                    tgfb-context)))
+ (block
+  (p21 cell-proliferation)
+  (("inferred_from" block
+                    (p21 cyclin-e:cdk2)
+                    tgfb-context
+                    cause
+                    (cyclin-e:cdk2 cell-proliferation)
+                    tgfb-context)))
+ (block
+  (smads e2fs)
+  (("inferred_from"
+    block
+    (smads cyclin-d:cdk4)
+    (("inferred_from" cause
+                      (smads p15)
+                      tgfb-context
+                      block
+                      (p15 cyclin-d:cdk4)
+                      tgfb-context))
+    cause
+    (cyclin-d:cdk4 e2fs)
+    (("inferred_from" block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context
+                      block
+                      (rb e2fs)
+                      tgfb-context)))))
+ (block
+  (smads cell-proliferation)
+  (("inferred_from"
+    block
+    (smads cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (smads p27)
+                      tgfb-context
+                      block
+                      (p27 cyclin-e:cdk2)
+                      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (block
+  (tgf-beta:tgf-beta-r e2fs)
+  (("inferred_from"
+    block
+    (tgf-beta:tgf-beta-r cyclin-d:cdk4)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p15)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p15)
+                        tgfb-context))
+      block
+      (p15 cyclin-d:cdk4)
+      tgfb-context))
+    cause
+    (cyclin-d:cdk4 e2fs)
+    (("inferred_from" block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context
+                      block
+                      (rb e2fs)
+                      tgfb-context)))))
+ (block
+  (tgf-beta:tgf-beta-r cell-proliferation)
+  (("inferred_from"
+    block
+    (tgf-beta:tgf-beta-r cyclin-e:cdk2)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p27)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p27)
+                        tgfb-context))
+      block
+      (p27 cyclin-e:cdk2)
+      tgfb-context))
+    cause
+    (cyclin-e:cdk2 cell-proliferation)
+    tgfb-context)))
+ (block
+  (cyclin-d:cdk4 cyclin-e:cdk2)
+  (("inferred_from"
+    block
+    (cyclin-d:cdk4 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (cyclin-d:cdk4 e2fs)
+      (("inferred_from" block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context
+                        block
+                        (rb e2fs)
+                        tgfb-context))
+      block
+      (e2fs changes-in-gene-expression)
+      tgfb-context))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (block
+  (cyclin-d:cdk4 cell-proliferation)
+  (("inferred_from"
+    block
+    (cyclin-d:cdk4 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (cyclin-d:cdk4 e2fs)
+      (("inferred_from" block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context
+                        block
+                        (rb e2fs)
+                        tgfb-context))
+      block
+      (e2fs changes-in-gene-expression)
+      tgfb-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (block
+  (hpv-e7 cyclin-e:cdk2)
+  (("inferred_from"
+    block
+    (hpv-e7 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (hpv-e7 e2fs)
+      (("inferred_from" block
+                        (hpv-e7 rb)
+                        tgfb-context
+                        block
+                        (rb e2fs)
+                        tgfb-context))
+      block
+      (e2fs changes-in-gene-expression)
+      tgfb-context))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (block
+  (hpv-e7 cell-proliferation)
+  (("inferred_from"
+    block
+    (hpv-e7 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (hpv-e7 e2fs)
+      (("inferred_from" block
+                        (hpv-e7 rb)
+                        tgfb-context
+                        block
+                        (rb e2fs)
+                        tgfb-context))
+      block
+      (e2fs changes-in-gene-expression)
+      tgfb-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (wnt frizzled dishevelled)
+  (("inferred_from" cause
+                    (wnt frizzled wnt:frizzled)
+                    wnt-pathway-context
+                    cause
+                    (wnt:frizzled dishevelled)
+                    wnt-pathway-context)))
+ (cause
+  (wnt frizzled gsk-3beta)
+  (("inferred_from"
+    cause
+    (wnt frizzled wnt:frizzled)
+    wnt-pathway-context
+    cause
+    (wnt:frizzled gsk-3beta)
+    (("inferred_from" cause
+                      (wnt:frizzled dishevelled)
+                      wnt-pathway-context
+                      cause
+                      (dishevelled gsk-3beta)
+                      wnt-pathway-context)))))
+ (cause
+  (wnt frizzled apc)
+  (("inferred_from"
+    cause
+    (wnt frizzled wnt:frizzled)
+    wnt-pathway-context
+    cause
+    (wnt:frizzled apc)
+    (("inferred_from"
+      cause
+      (wnt:frizzled gsk-3beta)
+      (("inferred_from" cause
+                        (wnt:frizzled dishevelled)
+                        wnt-pathway-context
+                        cause
+                        (dishevelled gsk-3beta)
+                        wnt-pathway-context))
+      cause
+      (gsk-3beta apc)
+      wnt-pathway-context)))))
+ (cause
+  (wnt frizzled beta-cetenin)
+  (("inferred_from"
+    cause
+    (wnt frizzled wnt:frizzled)
+    wnt-pathway-context
+    cause
+    (wnt:frizzled beta-cetenin)
+    (("inferred_from"
+      cause
+      (wnt:frizzled gsk-3beta)
+      (("inferred_from" cause
+                        (wnt:frizzled dishevelled)
+                        wnt-pathway-context
+                        cause
+                        (dishevelled gsk-3beta)
+                        wnt-pathway-context))
+      cause
+      (gsk-3beta beta-cetenin)
+      (("inferred_from" cause
+                        (gsk-3beta apc)
+                        wnt-pathway-context
+                        cause
+                        (apc beta-cetenin)
+                        wnt-pathway-context)))))))
+ (cause
+  (beta-catenin tcf changes-in-gene-expression)
+  (("inferred_from" cause
+                    (beta-catenin tcf beta-catenin:tcf)
+                    wnt-pathway-context
+                    cause
+                    (beta-catenin:tcf changes-in-gene-expression))))
+ (cause
+  (beta-catenin tcf cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (beta-catenin tcf beta-catenin:tcf)
+    wnt-pathway-context
+    cause
+    (beta-catenin:tcf cyclin-e:cdk2)
+    (("inferred_from" cause
+                      (beta-catenin:tcf changes-in-gene-expression)
+                      cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context)))))
+ (cause
+  (beta-catenin tcf cell-proliferation)
+  (("inferred_from"
+    cause
+    (beta-catenin tcf beta-catenin:tcf)
+    wnt-pathway-context
+    cause
+    (beta-catenin:tcf cell-proliferation)
+    (("inferred_from"
+      cause
+      (beta-catenin:tcf cyclin-e:cdk2)
+      (("inferred_from" cause
+                        (beta-catenin:tcf changes-in-gene-expression)
+                        cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context))
+      cause
+      (cyclin-e:cdk2 cell-proliferation)
+      tgfb-context)))))
+ (cause
+  (bombesin 7-tmr ad-cyclin)
+  (("inferred_from" cause
+                    (bombesin 7-tmr g-protein)
+                    hormone-context
+                    cause
+                    (g-protein ad-cyclin)
+                    hormone-context)))
+ (cause
+  (bombesin 7-tmr pka)
+  (("inferred_from"
+    cause
+    (bombesin 7-tmr g-protein)
+    hormone-context
+    cause
+    (g-protein pka)
+    (("inferred_from" cause
+                      (g-protein ad-cyclin)
+                      hormone-context
+                      cause
+                      (ad-cyclin pka)
+                      hormone-context)))))
+ (cause
+  (bombesin 7-tmr creb)
+  (("inferred_from"
+    cause
+    (bombesin 7-tmr g-protein)
+    hormone-context
+    cause
+    (g-protein creb)
+    (("inferred_from"
+      cause
+      (g-protein pka)
+      (("inferred_from" cause
+                        (g-protein ad-cyclin)
+                        hormone-context
+                        cause
+                        (ad-cyclin pka)
+                        hormone-context))
+      cause
+      (pka creb)
+      hormone-context)))))
+ (cause
+  (bombesin 7-tmr changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (bombesin 7-tmr g-protein)
+    hormone-context
+    cause
+    (g-protein changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (g-protein pka)
+      (("inferred_from" cause
+                        (g-protein ad-cyclin)
+                        hormone-context
+                        cause
+                        (ad-cyclin pka)
+                        hormone-context))
+      cause
+      (pka changes-in-gene-expression)
+      (("inferred_from" cause
+                        (pka creb)
+                        hormone-context
+                        cause
+                        (creb changes-in-gene-expression)
+                        hormone-context)))))))
+ (cause
+  (bombesin 7-tmr cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (bombesin 7-tmr g-protein)
+    hormone-context
+    cause
+    (g-protein cyclin-e:cdk2)
+    (("inferred_from"
+      cause
+      (g-protein creb)
+      (("inferred_from"
+        cause
+        (g-protein pka)
+        (("inferred_from" cause
+                          (g-protein ad-cyclin)
+                          hormone-context
+                          cause
+                          (ad-cyclin pka)
+                          hormone-context))
+        cause
+        (pka creb)
+        hormone-context))
+      cause
+      (creb cyclin-e:cdk2)
+      (("inferred_from" cause
+                        (creb changes-in-gene-expression)
+                        hormone-context
+                        cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context)))))))
+ (cause
+  (bombesin 7-tmr cell-proliferation)
+  (("inferred_from"
+    cause
+    (bombesin 7-tmr g-protein)
+    hormone-context
+    cause
+    (g-protein cell-proliferation)
+    (("inferred_from"
+      cause
+      (g-protein creb)
+      (("inferred_from"
+        cause
+        (g-protein pka)
+        (("inferred_from" cause
+                          (g-protein ad-cyclin)
+                          hormone-context
+                          cause
+                          (ad-cyclin pka)
+                          hormone-context))
+        cause
+        (pka creb)
+        hormone-context))
+      cause
+      (creb cell-proliferation)
+      (("inferred_from"
+        cause
+        (creb cyclin-e:cdk2)
+        (("inferred_from" cause
+                          (creb changes-in-gene-expression)
+                          hormone-context
+                          cause
+                          (changes-in-gene-expression cyclin-e:cdk2)
+                          tgfb-context))
+        cause
+        (cyclin-e:cdk2 cell-proliferation)
+        tgfb-context)))))))
+ (cause
+  (cytokines cytokine-r stat3)
+  (("inferred_from" cause
+                    (cytokines cytokine-r jaks)
+                    cytokine-context
+                    cause
+                    (jaks stat3)
+                    cytokine-context)))
+ (cause
+  (cytokines cytokine-r stat5)
+  (("inferred_from" cause
+                    (cytokines cytokine-r jaks)
+                    cytokine-context
+                    cause
+                    (jaks stat5)
+                    cytokine-context)))
+ (cause
+  (cytokines cytokine-r bclxl)
+  (("inferred_from"
+    cause
+    (cytokines cytokine-r jaks)
+    cytokine-context
+    cause
+    (jaks bclxl)
+    (("inferred_from" cause
+                      (jaks stat3)
+                      cytokine-context
+                      cause
+                      (stat3 bclxl)
+                      cytokine-context)))))
+ (cause
+  (cytokines cytokine-r changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (cytokines cytokine-r jaks)
+    cytokine-context
+    cause
+    (jaks changes-in-gene-expression)
+    (("inferred_from" cause
+                      (jaks stat3)
+                      cytokine-context
+                      cause
+                      (stat3 changes-in-gene-expression)
+                      cytokine-context)))))
+ (cause
+  (cytokines cytokine-r cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (cytokines cytokine-r jaks)
+    cytokine-context
+    cause
+    (jaks cyclin-e:cdk2)
+    (("inferred_from"
+      cause
+      (jaks changes-in-gene-expression)
+      (("inferred_from" cause
+                        (jaks stat3)
+                        cytokine-context
+                        cause
+                        (stat3 changes-in-gene-expression)
+                        cytokine-context))
+      cause
+      (changes-in-gene-expression cyclin-e:cdk2)
+      tgfb-context)))))
+ (cause
+  (cytokines cytokine-r cell-proliferation)
+  (("inferred_from"
+    cause
+    (cytokines cytokine-r jaks)
+    cytokine-context
+    cause
+    (jaks cell-proliferation)
+    (("inferred_from"
+      cause
+      (jaks changes-in-gene-expression)
+      (("inferred_from" cause
+                        (jaks stat3)
+                        cytokine-context
+                        cause
+                        (stat3 changes-in-gene-expression)
+                        cytokine-context))
+      cause
+      (changes-in-gene-expression cell-proliferation)
+      (("inferred_from" cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context
+                        cause
+                        (cyclin-e:cdk2 cell-proliferation)
+                        tgfb-context)))))))
+ (cause
+  (tgf-beta tgf-beta-r smads)
+  (("inferred_from" cause
+                    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+                    tgfb-context
+                    cause
+                    (tgf-beta:tgf-beta-r smads)
+                    tgfb-context)))
+ (cause
+  (tgf-beta tgf-beta-r p15)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    cause
+    (tgf-beta:tgf-beta-r p15)
+    (("inferred_from" cause
+                      (tgf-beta:tgf-beta-r smads)
+                      tgfb-context
+                      cause
+                      (smads p15)
+                      tgfb-context)))))
+ (cause
+  (tgf-beta tgf-beta-r p27)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    cause
+    (tgf-beta:tgf-beta-r p27)
+    (("inferred_from" cause
+                      (tgf-beta:tgf-beta-r smads)
+                      tgfb-context
+                      cause
+                      (smads p27)
+                      tgfb-context)))))
+ (cause
+  (tgf-beta tgf-beta-r p21)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    cause
+    (tgf-beta:tgf-beta-r p21)
+    (("inferred_from" cause
+                      (tgf-beta:tgf-beta-r smads)
+                      tgfb-context
+                      cause
+                      (smads p21)
+                      tgfb-context)))))
+ (cause
+  (cyclin-d cdk4 e2fs)
+  (("inferred_from"
+    cause
+    (cyclin-d cdk4 cyclin-d:cdk4)
+    tgfb-context
+    cause
+    (cyclin-d:cdk4 e2fs)
+    (("inferred_from" block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context
+                      block
+                      (rb e2fs)
+                      tgfb-context)))))
+ (cause
+  (cyclin-e cdk2 cell-proliferation)
+  (("inferred_from" cause
+                    (cyclin-e cdk2 cyclin-e:cdk2)
+                    tgfb-context
+                    cause
+                    (cyclin-e:cdk2 cell-proliferation)
+                    tgfb-context)))
+ (cause
+  (tgf-beta tgf-beta-r rb)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r p15)
+    (("inferred_from"
+      cause
+      (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+      tgfb-context
+      cause
+      (tgf-beta:tgf-beta-r p15)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p15)
+                        tgfb-context))))
+    cause
+    (p15 rb)
+    (("inferred_from" block
+                      (p15 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context)))))
+ (cause
+  (tgf-beta tgf-beta-r changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r rb)
+    (("inferred_from"
+      cause
+      (tgf-beta tgf-beta-r p15)
+      (("inferred_from"
+        cause
+        (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+        tgfb-context
+        cause
+        (tgf-beta:tgf-beta-r p15)
+        (("inferred_from" cause
+                          (tgf-beta:tgf-beta-r smads)
+                          tgfb-context
+                          cause
+                          (smads p15)
+                          tgfb-context))))
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context)))))
+ (cause
+  (tgf-beta tgf-beta-r cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (tgf-beta tgf-beta-r rb)
+      (("inferred_from"
+        cause
+        (tgf-beta tgf-beta-r p15)
+        (("inferred_from"
+          cause
+          (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+          tgfb-context
+          cause
+          (tgf-beta:tgf-beta-r p15)
+          (("inferred_from" cause
+                            (tgf-beta:tgf-beta-r smads)
+                            tgfb-context
+                            cause
+                            (smads p15)
+                            tgfb-context))))
+        cause
+        (p15 rb)
+        (("inferred_from" block
+                          (p15 cyclin-d:cdk4)
+                          tgfb-context
+                          block
+                          (cyclin-d:cdk4 rb)
+                          tgfb-context))))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (tgf-beta tgf-beta-r cell-proliferation)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (tgf-beta tgf-beta-r rb)
+      (("inferred_from"
+        cause
+        (tgf-beta tgf-beta-r p15)
+        (("inferred_from"
+          cause
+          (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+          tgfb-context
+          cause
+          (tgf-beta:tgf-beta-r p15)
+          (("inferred_from" cause
+                            (tgf-beta:tgf-beta-r smads)
+                            tgfb-context
+                            cause
+                            (smads p15)
+                            tgfb-context))))
+        cause
+        (p15 rb)
+        (("inferred_from" block
+                          (p15 cyclin-d:cdk4)
+                          tgfb-context
+                          block
+                          (cyclin-d:cdk4 rb)
+                          tgfb-context))))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (block
+  (tgf-beta tgf-beta-r cyclin-d:cdk4)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    block
+    (tgf-beta:tgf-beta-r cyclin-d:cdk4)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p15)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p15)
+                        tgfb-context))
+      block
+      (p15 cyclin-d:cdk4)
+      tgfb-context)))))
+ (block
+  (tgf-beta tgf-beta-r cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    block
+    (tgf-beta:tgf-beta-r cyclin-e:cdk2)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p27)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p27)
+                        tgfb-context))
+      block
+      (p27 cyclin-e:cdk2)
+      tgfb-context)))))
+ (block
+  (tgf-beta tgf-beta-r e2fs)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    block
+    (tgf-beta:tgf-beta-r e2fs)
+    (("inferred_from"
+      block
+      (tgf-beta:tgf-beta-r cyclin-d:cdk4)
+      (("inferred_from"
+        cause
+        (tgf-beta:tgf-beta-r p15)
+        (("inferred_from" cause
+                          (tgf-beta:tgf-beta-r smads)
+                          tgfb-context
+                          cause
+                          (smads p15)
+                          tgfb-context))
+        block
+        (p15 cyclin-d:cdk4)
+        tgfb-context))
+      cause
+      (cyclin-d:cdk4 e2fs)
+      (("inferred_from" block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context
+                        block
+                        (rb e2fs)
+                        tgfb-context)))))))
+ (block
+  (tgf-beta tgf-beta-r cell-proliferation)
+  (("inferred_from"
+    cause
+    (tgf-beta tgf-beta-r tgf-beta:tgf-beta-r)
+    tgfb-context
+    block
+    (tgf-beta:tgf-beta-r cell-proliferation)
+    (("inferred_from"
+      block
+      (tgf-beta:tgf-beta-r cyclin-e:cdk2)
+      (("inferred_from"
+        cause
+        (tgf-beta:tgf-beta-r p27)
+        (("inferred_from" cause
+                          (tgf-beta:tgf-beta-r smads)
+                          tgfb-context
+                          cause
+                          (smads p27)
+                          tgfb-context))
+        block
+        (p27 cyclin-e:cdk2)
+        tgfb-context))
+      cause
+      (cyclin-e:cdk2 cell-proliferation)
+      tgfb-context)))))
+ (block
+  (cyclin-d cdk4 rb)
+  (("inferred_from" cause
+                    (cyclin-d cdk4 cyclin-d:cdk4)
+                    tgfb-context
+                    block
+                    (cyclin-d:cdk4 rb)
+                    tgfb-context)))
+ (block
+  (cyclin-d cdk4 changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (cyclin-d cdk4 cyclin-d:cdk4)
+    tgfb-context
+    block
+    (cyclin-d:cdk4 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (cyclin-d:cdk4 e2fs)
+      (("inferred_from" block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context
+                        block
+                        (rb e2fs)
+                        tgfb-context))
+      block
+      (e2fs changes-in-gene-expression)
+      tgfb-context)))))
+ (block
+  (cyclin-d cdk4 cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (cyclin-d cdk4 cyclin-d:cdk4)
+    tgfb-context
+    block
+    (cyclin-d:cdk4 cyclin-e:cdk2)
+    (("inferred_from"
+      block
+      (cyclin-d:cdk4 changes-in-gene-expression)
+      (("inferred_from"
+        cause
+        (cyclin-d:cdk4 e2fs)
+        (("inferred_from" block
+                          (cyclin-d:cdk4 rb)
+                          tgfb-context
+                          block
+                          (rb e2fs)
+                          tgfb-context))
+        block
+        (e2fs changes-in-gene-expression)
+        tgfb-context))
+      cause
+      (changes-in-gene-expression cyclin-e:cdk2)
+      tgfb-context)))))
+ (block
+  (cyclin-d cdk4 cell-proliferation)
+  (("inferred_from"
+    cause
+    (cyclin-d cdk4 cyclin-d:cdk4)
+    tgfb-context
+    block
+    (cyclin-d:cdk4 cell-proliferation)
+    (("inferred_from"
+      block
+      (cyclin-d:cdk4 changes-in-gene-expression)
+      (("inferred_from"
+        cause
+        (cyclin-d:cdk4 e2fs)
+        (("inferred_from" block
+                          (cyclin-d:cdk4 rb)
+                          tgfb-context
+                          block
+                          (rb e2fs)
+                          tgfb-context))
+        block
+        (e2fs changes-in-gene-expression)
+        tgfb-context))
+      cause
+      (changes-in-gene-expression cell-proliferation)
+      (("inferred_from" cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context
+                        cause
+                        (cyclin-e:cdk2 cell-proliferation)
+                        tgfb-context)))))))
+ (cause
+  (smads rb)
+  (("inferred_from"
+    cause
+    (smads p15)
+    tgfb-context
+    cause
+    (p15 rb)
+    (("inferred_from" block
+                      (p15 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context)))))
+ (cause
+  (tgf-beta:tgf-beta-r rb)
+  (("inferred_from"
+    cause
+    (tgf-beta:tgf-beta-r p15)
+    (("inferred_from" cause
+                      (tgf-beta:tgf-beta-r smads)
+                      tgfb-context
+                      cause
+                      (smads p15)
+                      tgfb-context))
+    cause
+    (p15 rb)
+    (("inferred_from" block
+                      (p15 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context)))))
+ (cause
+  (p16 changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (p16 rb)
+    (("inferred_from" block
+                      (p16 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context))
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context)))))
+ (cause
+  (p15 changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (p15 rb)
+    (("inferred_from" block
+                      (p15 cyclin-d:cdk4)
+                      tgfb-context
+                      block
+                      (cyclin-d:cdk4 rb)
+                      tgfb-context))
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context)))))
+ (cause
+  (rb cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (rb cell-proliferation)
+  (("inferred_from"
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (smads changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (smads rb)
+    (("inferred_from"
+      cause
+      (smads p15)
+      tgfb-context
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context)))))
+ (cause
+  (smads cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (smads rb)
+    (("inferred_from"
+      cause
+      (smads p15)
+      tgfb-context
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb cyclin-e:cdk2)
+    (("inferred_from"
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))
+      cause
+      (changes-in-gene-expression cyclin-e:cdk2)
+      tgfb-context)))))
+ (cause
+  (smads cell-proliferation)
+  (("inferred_from"
+    cause
+    (smads rb)
+    (("inferred_from"
+      cause
+      (smads p15)
+      tgfb-context
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb cell-proliferation)
+    (("inferred_from"
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))
+      cause
+      (changes-in-gene-expression cell-proliferation)
+      (("inferred_from" cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context
+                        cause
+                        (cyclin-e:cdk2 cell-proliferation)
+                        tgfb-context)))))))
+ (cause
+  (tgf-beta:tgf-beta-r changes-in-gene-expression)
+  (("inferred_from"
+    cause
+    (tgf-beta:tgf-beta-r rb)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p15)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p15)
+                        tgfb-context))
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb changes-in-gene-expression)
+    (("inferred_from" block
+                      (rb e2fs)
+                      tgfb-context
+                      block
+                      (e2fs changes-in-gene-expression)
+                      tgfb-context)))))
+ (cause
+  (tgf-beta:tgf-beta-r cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (tgf-beta:tgf-beta-r rb)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p15)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p15)
+                        tgfb-context))
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb cyclin-e:cdk2)
+    (("inferred_from"
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))
+      cause
+      (changes-in-gene-expression cyclin-e:cdk2)
+      tgfb-context)))))
+ (cause
+  (tgf-beta:tgf-beta-r cell-proliferation)
+  (("inferred_from"
+    cause
+    (tgf-beta:tgf-beta-r rb)
+    (("inferred_from"
+      cause
+      (tgf-beta:tgf-beta-r p15)
+      (("inferred_from" cause
+                        (tgf-beta:tgf-beta-r smads)
+                        tgfb-context
+                        cause
+                        (smads p15)
+                        tgfb-context))
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))))
+    cause
+    (rb cell-proliferation)
+    (("inferred_from"
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))
+      cause
+      (changes-in-gene-expression cell-proliferation)
+      (("inferred_from" cause
+                        (changes-in-gene-expression cyclin-e:cdk2)
+                        tgfb-context
+                        cause
+                        (cyclin-e:cdk2 cell-proliferation)
+                        tgfb-context)))))))
+ (cause
+  (p16 cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (p16 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (p16 rb)
+      (("inferred_from" block
+                        (p16 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (p16 cell-proliferation)
+  (("inferred_from"
+    cause
+    (p16 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (p16 rb)
+      (("inferred_from" block
+                        (p16 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+ (cause
+  (p15 cyclin-e:cdk2)
+  (("inferred_from"
+    cause
+    (p15 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cyclin-e:cdk2)
+    tgfb-context)))
+ (cause
+  (p15 cell-proliferation)
+  (("inferred_from"
+    cause
+    (p15 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context))))))
+
+real    6m46.514s
+user    1m8.272s
+sys     5m35.881s

@@ -2,8 +2,8 @@
 
 (load "inference_engine.scm")
 
-(load "bio_data/knowledge.scm")
-(load "bio_data/rules.scm")
+(load "data/cancer_biology/knowledge.scm")
+(load "data/cancer_biology/rules.scm")
 
 (ie:init)
 
