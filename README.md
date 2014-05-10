@@ -1,4 +1,4 @@
-6.945 Final Project: Inferences from Scientific Publications in Biology
+6.945 Project: Inferences from Scientific Publications in Biology
 ===============
 
 ###Report
