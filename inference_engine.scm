@@ -1,5 +1,30 @@
 ;;;; inference_engine.scm
 #|
+The inference engine takes a set of knowledge and a set of rules
+and makes inferences by applying the set of rules as many times as
+possible to the knowledge to obtain new statements. These "inferred
+statements" are added to the existing set of knowledge, and the rules
+are again applied against the growing set of knowledge until no new
+inferences can be made. The inference engine API contains functions to add knowledge and rules,
+to start the infering, and to query the set of knowledge.
+
+Each knowledge is made of:
+- a clause (like CAUSE, BLOCK, UPREGULATES, DOWNREGULATES)
+- a list of arguments (like moleculeA, moleculeB)
+- a context - metadata about the knowledge, including among other things,
+  the author of the paper, the data of publication, and the journal.
+  The context of inferred statements includes which statements
+  led to that inference (like a "taint").
+  
+Each rule is made of:
+- a set of matching patterns - these must be matched by existing statements
+- a "rewrite rule" used to generate a new knowledge statement
+
+* Example knowledge and rules are given in the data/ folder.
+
+The inference engine supports aliases. See [TODO: section]
+of report.pdf for an explanation.
+
 Interface:
 - (ie:init)
 - (ie:add-knowledge knowledge)

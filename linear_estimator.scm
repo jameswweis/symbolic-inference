@@ -2,7 +2,6 @@
 #|
 The linear estimator takes a table of molecule concentrations
 (stored in a text file) and generates a knowledge statement.
-
 The table must have 2 columns, one for each molecule.
 The first row contains the molecule names; the other rows contain
 their concentrations. For example:
@@ -17,7 +16,6 @@ their concentrations. For example:
 The linear estimator calculates the correlation of A and B and
 outputs a knowledge statement for "A blocks B" or "A causes B"
 depending on whether the correlation is positive or negative.
-
 That knowledge can be fed directly to the inference engine.
 
 Interface:

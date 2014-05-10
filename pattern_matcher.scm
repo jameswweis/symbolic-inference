@@ -3,9 +3,7 @@
 Given a set of knowledge and a set of rules, the pattern matcher
 tries to apply the rules to the existing knowledge. Whenever it
 finds a new statement that could be added to the knowledge based on a
-rule, it calls a callback.
-
-Usually, the inference engine runs the pattern matcher and supplies
+rule, it calls a callback. Usually, the inference engine runs the pattern matcher and supplies
 a callback that adds the new rule to the existing set of knowledge.
 This is how inferences are made.
 

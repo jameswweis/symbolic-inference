@@ -1,5 +1,8 @@
 ;;;; modified version of GJS matcher that does comparison with aliases
 #|
+For an explanation of comparison with aliases, see [TODO: section]
+of report.pdf.
+
 Interface (beyond regular matching):
 - (match:set-compound_obj_aliases! x)
 |#
@@ -8,36 +11,33 @@ Interface (beyond regular matching):
 
 (define match:compound_obj_aliases 'nothing)
 
+; set! the alias definitions to be used during matching.
 (define (match:set-compound_obj_aliases! x)
   (set! match:compound_obj_aliases x))
 
+; Returns #t if (memq obj lst)
 (define (memq? obj lst)
   (not (not (memq obj lst))))
 
-(define (match:special-equal? dict_val data)
-  ;(pp (list "###special-equal?" dict_val data))
-  
+; In match:element, we use match:special-equal? instead of equal?
+; to do alias comparison.
+(define (match:special-equal? dict_val data)  
   (if (not (list? match:compound_obj_aliases))
-      ; default equality
-      (equal? dict_val data)
-      
-      ; equality with aliases
-      
-      #|
-      if thing in dict is string
-        it only matches strings
-      if thing in dict is sym
-        it matches symbols or strings
-      |#
-      (cond ((string? dict_val) (equal? dict_val data))
-            ((symbol? dict_val)
-              (let ((alias_list (assoc data match:compound_obj_aliases)))
-                ;(pp (list "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^" (and alias_list (cdr alias_list))))
-                (or (equal? dict_val data)
-                     (and alias_list (memq? dict_val (cdr alias_list)) ))))
-            (else (equal? dict_val data))
-      )
-  ))
+    ; no aliases exist, use default equality
+    (equal? dict_val data)
+    ; do equality with aliases
+    #|
+    if thing in dict is string
+      it only matches strings
+    if thing in dict is sym
+      it matches symbols or aliases
+    |#
+    (cond ((string? dict_val) (equal? dict_val data))
+          ((symbol? dict_val)
+            (let ((alias_list (assoc data match:compound_obj_aliases)))
+              (or (equal? dict_val data)
+                   (and alias_list (memq? dict_val (cdr alias_list)) ))))
+          (else (equal? dict_val data)))))
 
 ;;;; Matcher based on match combinators, CPH/GJS style.
 ;;;     Idea is in Hewitt's PhD thesis (1969).
