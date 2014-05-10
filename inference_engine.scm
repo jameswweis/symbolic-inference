@@ -5,8 +5,9 @@ and makes inferences by applying the set of rules as many times as
 possible to the knowledge to obtain new statements. These "inferred
 statements" are added to the existing set of knowledge, and the rules
 are again applied against the growing set of knowledge until no new
-inferences can be made. The inference engine API contains functions to add knowledge and rules,
-to start the infering, and to query the set of knowledge.
+inferences can be made. The inference engine API contains functions to
+add knowledge and rules, to start the infering, and to query the set
+of knowledge.
 
 Each knowledge is made of:
 - a clause (like CAUSE, BLOCK, UPREGULATES, DOWNREGULATES)
@@ -22,8 +23,8 @@ Each rule is made of:
 
 * Example knowledge and rules are given in the data/ folder.
 
-The inference engine supports aliases. See [TODO: section]
-of report.pdf for an explanation.
+The inference engine supports aliases. For an explanation of comparison
+with aliases, see Section 2.1.1.1 of report.pdf.
 
 Interface:
 - (ie:init)
@@ -148,7 +149,8 @@ Interface:
               (statementArgs (car (cdr statement))) 
               (knowledgeType (car (car current-knowledge))) 
               (knowledgeArgs (car (cdr (car current-knowledge))))
-              (sk-equal (ie:eq-statement-knowledge? statementType statementArgs knowledgeType knowledgeArgs)))
+              (sk-equal (ie:eq-statement-knowledge? statementType
+                statementArgs knowledgeType knowledgeArgs)))
         (if sk-equal
           (set! matches (cons (car current-knowledge) matches)))
         (ie:member-helper statement (cdr current-knowledge) matches))))
@@ -178,4 +180,5 @@ Interface:
 ; of (kType kArgs). The types are statement clauses and args are compared
 ; with "alias equality"
 (define (ie:eq-statement-knowledge? sType sArgs kType kArgs)
-  (and (equal? sType kType) (equal? (length sArgs) (length kArgs)) (ie:eq-args? sArgs kArgs)))
+  (and (equal? sType kType) (equal? (length sArgs) (length kArgs))
+    (ie:eq-args? sArgs kArgs)))

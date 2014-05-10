@@ -1,6 +1,6 @@
 ;;;; modified version of GJS matcher that does comparison with aliases
 #|
-For an explanation of comparison with aliases, see [TODO: section]
+For an explanation of comparison with aliases, see Section 2.1.1.1
 of report.pdf.
 
 Interface (beyond regular matching):
@@ -25,13 +25,12 @@ Interface (beyond regular matching):
   (if (not (list? match:compound_obj_aliases))
     ; no aliases exist, use default equality
     (equal? dict_val data)
+    
     ; do equality with aliases
-    #|
-    if thing in dict is string
-      it only matches strings
-    if thing in dict is sym
-      it matches symbols or aliases
-    |#
+    ; if thing in dict is string (alias name):
+    ;   it only matches strings (alias name)
+    ; if thing in dict is symbol (entity):
+    ;   it matches symbols (entity) or alias values
     (cond ((string? dict_val) (equal? dict_val data))
           ((symbol? dict_val)
             (let ((alias_list (assoc data match:compound_obj_aliases)))

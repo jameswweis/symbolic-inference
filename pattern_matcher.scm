@@ -3,9 +3,9 @@
 Given a set of knowledge and a set of rules, the pattern matcher
 tries to apply the rules to the existing knowledge. Whenever it
 finds a new statement that could be added to the knowledge based on a
-rule, it calls a callback. Usually, the inference engine runs the pattern matcher and supplies
-a callback that adds the new rule to the existing set of knowledge.
-This is how inferences are made.
+rule, it calls a callback. Usually, the inference engine runs the
+pattern matcher and supplies a callback that adds the new rule to
+the existing set of knowledge. This is how inferences are made.
 
 Rules usually have multiple patterns in them. pm:match-multiple
 matches all the patterns in a rule while maintaining the same variable
@@ -59,12 +59,16 @@ Interface:
         (for-each2 knowledge (lambda (statement)
           (define (cont-match-combinators newdict n)
             ;(pp `(individual-succeed ,newdict))
-            (pm:match-multiple knowledge (cdr patterns) newdict (append matched_statements statement) cont))
+            (pm:match-multiple knowledge (cdr patterns) newdict
+              (append matched_statements statement) cont))
           
-          ;(pp (list "matching pattern:" (car patterns) "against:" (list (cons (car statement) (cadr statement)))  ))
+          ;(pp (list "matching pattern:" (car patterns)
+          ;    "against:" (list (cons (car statement) (cadr statement)))  ))
           
-          (let* ((clause_and_args (list (cons (car statement) (cadr statement))))
-                 (x ((match:->combinators (car patterns)) clause_and_args dict cont-match-combinators)))
+          (let* ((clause_and_args (list (cons (car statement)
+                   (cadr statement))))
+                 (x ((match:->combinators (car patterns))
+                   clause_and_args dict cont-match-combinators)))
             (if x (return x)))))
         (return #f))))))
 
@@ -93,7 +97,8 @@ Interface:
             (new_statement_pattern (cdr rule)))
       
         (define (cont-match-multiple newdict matched_statements)
-          (let ((new_statement (pm:sub-dict-into-pattern newdict new_statement_pattern)))
+          (let ((new_statement (pm:sub-dict-into-pattern
+              newdict new_statement_pattern)))
             (on_match_handler knowledge matched_statements new_statement)
             #f))
         
