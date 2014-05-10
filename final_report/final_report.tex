@@ -1,0 +1,684 @@
+% Created 2014-05-10 Sat 19:33
+\documentclass[11pt]{article}
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage{fixltx2e}
+\usepackage{graphicx}
+\usepackage{longtable}
+\usepackage{float}
+\usepackage{wrapfig}
+\usepackage{rotating}
+\usepackage[normalem]{ulem}
+\usepackage{amsmath}
+\usepackage{textcomp}
+\usepackage{marvosym}
+\usepackage{wasysym}
+\usepackage{amssymb}
+\usepackage{hyperref}
+\tolerance=1000
+\author{Leo Liu, James Weis, and Yasemin Gokce \\ \{leoliu, jww, yaseming\}@mit.edu}
+\date{12 May 2014 \\[\baselineskip] \url{http://github.com/yasho/6.945-FinalProj}}
+\title{Symbolic representation and inferences from  Scientific Publications}
+\hypersetup{
+  pdfkeywords={},
+  pdfsubject={},
+  pdfcreator={Emacs 24.3.1 (Org mode 8.2.4)}}
+\begin{document}
+
+\maketitle
+\tableofcontents
+
+
+\section{Introduction}
+\label{sec-1}
+The majority of existing scientific knowledge is contained within scientific journals, but its structure is obfuscated from facile computation by the complications of natural language. As such, the ability to automatically parse information from the existing set of knowledge is  hampered. The focus of this project is to investigate methods of representing and computing on scientific knowledge in a symbolic fashion, using the genetic pathways of significance in cancer biology as a model.
+
+One can imagine a world in which scientific literature was written---or at the very least, tagged---in a machine readable format. In such a world, analysis of science spanning journals---and even fields---could be conducted computationally. In such a world, researchers could eschew navigating the literature and instead directly surf the scientific landscape. Existing literature could be queried directly, allowing rapid identification of what is known, what is not known, what could be known with existing techniques, and what the most potentially impactful future directions for research are.
+
+As symbolic programming seems seems well-suited for such a challenge, we set out to implement a symbolic vocabulary and computation engine for scientific literature, inspired by the work in [6]. Our system is able to (1) infer causal relationships from raw biological data, (2) logically infer new relationships, and (3) make that data available for quick and intuitive human interaction, or “science surfing.”
+\section{System design}
+\label{sec-2}
+
+As shown in Figure \ref{fig:system-diagram}, our implemented system includes
+\begin{enumerate}
+\item Biology knowledge and rules data sets,
+\item A pattern matcher that infers new data from the existing knowledge data set using the supplied list of logical relationships,
+\item An inference engine that connects the user-facing knowledge and rules APIs to the internal structures, namely the pattern matcher and internal knowledge and rules representations, and
+\item A linear estimator that is capable of generating new causal relationships based on tables of experimental molecular concentration data.
+\end{enumerate}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.9\linewidth]{../docs/systemdiagram.png}
+\caption{\label{fig:system-diagram}Schematic for project design and implementation.}
+\end{figure}
+
+To better explain our system's function, consider the following toy example: When supplied with the tables of experimental data in Table \ref{tab:toy-data}, our linear estimator infers the relationships
+
+\begin{quote}
+\begin{verbatim}
+'(CAUSE X Y)
+'(CAUSE Y Z)
+\end{verbatim}
+\end{quote}
+
+and logically infers the relationship
+
+\begin{quote}
+\begin{verbatim}
+'(CAUSE X Z).
+\end{verbatim}
+\end{quote}
+
+\begin{table}[htb]
+\caption{\label{tab:toy-data}Example experimental data, used by the linear estimator to infer new causal relationships.}
+\centering
+\begin{tabular}{cc|cc}
+Molecule X (nM) & Molecule Y (nM) & Molecule Y (nM) & Molecule Z (nM)\\
+\hline
+59 & 350 & 560 & 3\\
+34 & 459 & 485 & 13\\
+26 & 684 & 283 & 58\\
+12 & 798 & 54 & 205\\
+\end{tabular}
+\end{table}
+
+We can then query our knowledge for higher-order relationships, such as:
+
+\begin{quote}
+\begin{verbatim}
+(is-true? '(CAUSE X Z))
+\end{verbatim}
+\end{quote}
+
+
+Which will output that the statement is, indeed, correct, and will also output the relevant metadata for the literature used in the induction.
+
+In our system, we focus on the relationships \texttt{CAUSE} and \texttt{BLOCK}, but the system is extensible to handle other rules such as \texttt{UP-REGULATE}, \texttt{INVOLVES}, \texttt{ON-SAME-PATHWAY}, etc.
+
+\subsection{Data structures}
+\label{sec-2-1}
+We have two data files: knowledge and rules. Both are in a list of list structure. List elements are unique; no duplicates are allowed. Knowledge can be entered manually or deduced from tables of molecular concentration data. Rules have to be entered manually.
+
+\subsubsection{Knowledge}
+\label{sec-2-1-1}
+Each piece of knowledge is made of three parts:
+
+\begin{enumerate}
+\item A clause indicated the type of relationship
+\item A list of arguments (such as \texttt{moleculeA}, \texttt{moleculeB})
+\item a context, which includes metadata about the source of the knowledge, such as the author of the paper, the data of publication, and the journal.  The context of inferred statements includes which statements that led to that inference (like a "taint").
+\end{enumerate}
+
+Knowledge directly annotated from scientific literature, in this case a subset of the TGF$\beta$ pathway, is as follows:
+
+\begin{quote}
+\begin{verbatim}
+;; TGF-Beta Pathway
+'(CAUSE (TGF-Beta TGF-Beta-R TGF-Beta:TGF-Beta-R) tgfb-context)
+'(BLOCK (Cyclin-D:CDK4 Rb) tgfb-context)
+'(BLOCK (HPV-E7 Rb) tgfb-context)
+\end{verbatim}
+\end{quote}
+
+To further illustrate our data structures, the context for the paper from which the above relationships were identified is as follows:
+
+\begin{quote}
+\begin{verbatim}
+(define tgfb-context
+  (list
+   (cons "title" "TGF-Beta signaling from [...] through SMAD proteins.")
+   (cons "author" "Heldin, C., Miayazono, K., and Dijke, P.")
+   (cons "year" "1997")
+   (cons "university" "Ludwig Institute for Cancer Research")
+   (cons "topic" "Cell biology")
+   (cons "journal" "Nature")
+   (cons "pubmed" "9393997")
+   (cons "locations" (list "loc_a1" "loc_b1"))))
+\end{verbatim}
+\end{quote}
+
+\begin{enumerate}
+\item Compound object aliases
+\label{sec-2-1-1-1}
+
+We allowed for user-defined molecule families in our system. For example, a user might create an umbrella group \texttt{“Cyclins”} composed of the cyclin molecules, in this way:
+
+\begin{quote}
+\begin{verbatim}
+(define compound_obj_aliases
+  '((cons "Cyclins" (list 'Cyclin-D 'Cyclin-E))))
+\end{verbatim}
+\end{quote}
+
+Using this alias, the user could reference the \texttt{“Cyclins”} group rather than specifying individual members of the group. For example, the following two queries would return the same result:
+
+\begin{quote}
+\begin{verbatim}
+(is-true? ‘CAUSE ‘Cyclin-D ‘Changes-in-gene-expression)
+(is-true? ‘CAUSE “Cyclins” ‘Changes-in-gene-expression)
+\end{verbatim}
+\end{quote}
+
+We modified GJS’s pattern matcher so that whenever it does element-to-element equality tests, it searches the alias definitions whenever it compares a symbol, which represents a single molecule or entity, to a string, which represents a set of related objects. This code is at the top of \texttt{matcher.scm} in the procedure \texttt{match:special-equal?}.
+\end{enumerate}
+\subsubsection{Rules}
+\label{sec-2-1-2}
+Each rule is made of:
+\begin{itemize}
+\item A set of matching patterns - these must be matched by existing statements, and
+\item A "rewrite rule" used to generate a new knowledge statement.
+\end{itemize}
+
+Examples of rules include:
+
+\begin{quote}
+\begin{verbatim}
+;; Rule 1: (a -> b) + (b -> c) -> (a -> c)
+(cons
+ (list '(CAUSE (? a) (? b))
+       '(CAUSE (? b) (? c)))
+ '(CAUSE (? a) (? c)))
+
+;; Rule 4: (a -| b) + (b -> c) -> (a -| c)
+(cons
+ (list '(BLOCK (? a) (? b))
+       '(CAUSE (? b) (? c)))
+ '(BLOCK (? a) (? c)))
+\end{verbatim}
+\end{quote}
+\subsection{API}
+\label{sec-2-2}
+The API can be grouped into (1) functions for adding knowledge, rules, and aliases to the system and (2) functions for making inferences and querying the knowledge.
+
+API for adding knowledge, rules, and aliases to the engine:
+
+\begin{quote}
+\begin{verbatim}
+(ie:init)
+(ie:add-knowledge knowledge)
+(ie:add-aliases new-aliases)
+(ie:add-rules new-rules)
+\end{verbatim}
+\end{quote}
+
+API for making inferences and querying the knowledge:
+
+\begin{quote}
+\begin{verbatim}
+(ie:infer context_predicate)
+(ie:is-true statement context_predicate)
+(ie:print-knowledge)
+\end{verbatim}
+\end{quote}
+
+Context predicates are not currently supported. See section 4.2 for how they could be used.
+\subsection{Inference engine}
+\label{sec-2-3}
+The inference engine takes a set of knowledge and a set of rules and makes inferences by applying the set of rules as many times as possible to the knowledge to obtain new statements. These "inferred statements" are added to the existing set of knowledge, and the rules are again applied against the growing set of knowledge until no new inferences can be made.
+
+The code for the inference engine is in \texttt{inference\_engine.scm}. Here is an example of how the user would interact with the system:
+
+\begin{quote}
+\begin{verbatim}
+; load knowledge and rules from scientific publications
+; the data is included with the code
+(load "data/cancer_biology/knowledge.scm")
+(load "data/cancer_biology/rules.scm")
+
+; add them to the engine
+(ie:add-knowledge knowledge)
+(ie:add-aliases compound_obj_aliases)
+(ie:add-rules rules)
+
+; ask the system whether a statement is true,
+; which causes it to make inferences and respond
+; Question: “Is it true that p15 causes cell proliferation?”
+(ie:is-true '(CAUSE (p15 cell-proliferation)) '())
+
+; The system responds “Yes it is true”
+; and explains how it got to that inference.
+TRUE
+Your statement is correct and was inferred from the following 2 statements:
+(cause
+  (p15 cell-proliferation)
+  (("inferred_from"
+    cause
+    (p15 changes-in-gene-expression)
+    (("inferred_from"
+      cause
+      (p15 rb)
+      (("inferred_from" block
+                        (p15 cyclin-d:cdk4)
+                        tgfb-context
+                        block
+                        (cyclin-d:cdk4 rb)
+                        tgfb-context))
+      cause
+      (rb changes-in-gene-expression)
+      (("inferred_from" block
+                        (rb e2fs)
+                        tgfb-context
+                        block
+                        (e2fs changes-in-gene-expression)
+                        tgfb-context))))
+    cause
+    (changes-in-gene-expression cell-proliferation)
+    (("inferred_from" cause
+                      (changes-in-gene-expression cyclin-e:cdk2)
+                      tgfb-context
+                      cause
+                      (cyclin-e:cdk2 cell-proliferation)
+                      tgfb-context)))))
+\end{verbatim}
+\end{quote}
+
+The output shows that
+
+\begin{quote}
+\begin{verbatim}
+'(CAUSE (p15 cell-proliferation))
+\end{verbatim}
+\end{quote}
+
+was inferred from two other statements, which were each inferred from other statements. Whenever an inference is made, its context will contain the statements that led to it. The context of the non-inferred statements usually describes the original source of the statement. For example, \texttt{tgfb-context} is defined as the following:
+
+
+\begin{quote}
+\begin{verbatim}
+(define tgfb-context
+  (list
+   (cons "title" "TGF-Beta signaling from [...] through  SMAD proteins.")
+   (cons "author" "Heldin, C., Miayazono, K., and Dijke, P.")
+   (cons "year" "1997")
+   (cons "university" "Ludwig Institute for Cancer Research")
+   (cons "topic" "Cell biology")
+   (cons "journal" "Nature")
+   (cons "pubmed" "9393997")
+   (cons "locations" (list "loc_a1" "loc_b1"))))
+\end{verbatim}
+\end{quote}
+\subsection{Inferences by pattern matching}
+\label{sec-2-4}
+
+To make inferences, the inference engine runs the pattern matcher. Given a set of knowledge and a set of rules, the pattern matcher tries to apply the rules to the existing knowledge. Whenever it finds a new statement that could be added to the knowledge based on a rule, it calls a callback.
+
+Whenever the user starts the inference process by calling ie:infer, the inference engine runs the pattern matcher by calling the \texttt{pm:match} procedure and supplies a callback that adds new rules to the existing set of knowledge:
+
+\begin{quote}
+\begin{verbatim}
+(define (ie:infer context_predicate)
+  ; create the callback
+  (define (on_match knowledge matched_statements new_statement)
+   ; according to some rule, “matched_statements => new_statement”
+   ; generate a knowledge object
+   ; include the source statements that led to the inference
+   ;   in the “inferred_from” field
+    (let* ((new_type (car new_statement))
+           (new_args (cdr new_statement))
+           (new_knowledge
+            (list new_type new_args
+                  (list
+                   (cons "inferred_from" matched_statements)))))
+                    ; add the new knowledge to the existing knowledge
+                    ; if it doesn’t already exist
+      (ie:add-knowledge-in-place new_knowledge)))
+       ; run the matcher and supply the callback
+  (pm:match all-knowledge all-rules on_match
+            all-compound_obj_aliases))
+\end{verbatim}
+\end{quote}
+
+The code for the pattern matcher is in \texttt{pattern\_matcher.scm}. The \texttt{pm:match} procedure appears as follows:
+
+\begin{quote}
+\begin{verbatim}
+(pm:match knowledge rules on_match_handler aliases)
+\end{verbatim}
+\end{quote}
+
+The procedure \texttt{pm:match} matches the set of knowledge against each rule using \texttt{pm:match-multiple}. Whenever it finds a match, it calls the \texttt{on\_match\_handler} supplied by the inference engine. The \texttt{on\_match\_handler} is a procedure of 3 arguments:
+
+\begin{enumerate}
+\item \texttt{knowledge}, a reference to the existing set of knowledge,
+\item \texttt{matched\_statements}, the statements that matched the matching patterns of the rule,
+\item \texttt{new\_statement}, the statement generated by the rewrite rule.
+\end{enumerate}
+
+Each rule in the rules argument is a rule that contains:
+\begin{enumerate}
+\item A set of matching patterns; these must be matched by existing statements,
+\item A "rewrite rule" used to generate a new knowledge statement.
+\end{enumerate}
+
+Rules usually have multiple patterns in them. The \texttt{pm:match-multiple} procedure tries to match each pattern in the list with  a separate statement while maintaining the same variable bindings across patterns. For example, given the rule
+
+\begin{quote}
+\begin{verbatim}
+'((CAUSE (? a) (? b)) (CAUSE (? b) (? c)))
+\end{verbatim}
+\end{quote}
+
+The \texttt{(? b)} in the statement that matches the first pattern must be the same as the \texttt{(? b)} in the statement that matches the remaining patterns. The procedure \texttt{pm:match-multiple} matches all the patterns for only a single rule. The signature of \texttt{pm:match-multiple} is:
+
+\begin{quote}
+\begin{verbatim}
+(pm:match-multiple knowledge patterns dict matched_statements cont)
+\end{verbatim}
+\end{quote}
+
+The procedure \texttt{pm:match-multiple} works by repeatedly making calls GJS's \texttt{match:combinators} to match each of the patterns. If it finds matches for all the patterns, it returns the result of executing cont, the success continuation. cont is a procedure that takes the dictionary of variable bindings and a list of \texttt{matched\_statements}.
+
+When \texttt{pm:match} calls \texttt{pm:match-multiple}, it \texttt{pm:match} supplies the following success continuation:
+
+\begin{quote}
+\begin{verbatim}
+(define (cont-match-multiple newdict matched_statements)
+  (let ((new_statement
+         (pm:sub-dict-into-pattern newdict new_statement_pattern)))
+    (on_match_handler knowledge matched_statements
+                      new_statement)
+    #f))
+\end{verbatim}
+\end{quote}
+
+When \texttt{pm:match-multiple} succeeds, it will execute \texttt{cont-match-multiple}, which will generate a new statement by substituting the variable bindings into the “rewrite pattern” of the rule. It then calls, the \texttt{on\_match\_handler} supplied by the inference engine, which will add the new knowledge to the existing set of knowledge. Finally, the success continuation returns \texttt{\#f} to force backtracking so that \texttt{pm:match-multiple} will find all the possible new statements implied by a given rule.
+
+The procedure \texttt{ie:infer} continues to run until no new knowledge can be generated. At that point, all inferences have been made and the user can query the new knowledge.
+\subsection{Linear estimator}
+\label{sec-2-5}
+
+The linear estimator takes a table of molecule concentrations (stored in a text file) and generates a knowledge statement. The table must have 2 columns, one for each molecule. The first row contains the molecule names; the other rows contain their concentrations. For example:
+
+\begin{center}
+\begin{tabular}{cc}
+Molecule A (nM) & Molecule B (nM)\\
+\hline
+1 & 50\\
+2 & 40\\
+3 & 30\\
+4 & 20\\
+5 & 10\\
+\end{tabular}
+\end{center}
+
+The linear estimator calculates the correlation of \texttt{A} and \texttt{B} and outputs a knowledge statement for "A blocks B" or "A causes B" by thresholding the correlation. The correlation is the slope of the linear regression line for \texttt{A} and \texttt{B}. That knowledge can be fed directly to the inference engine. The linear estimator gives the user the ability to input tables directly from scientific publications and make inferences on them.
+\section{Experiments on finding from cancer biology}
+\label{sec-3}
+
+We chose cancer biology as a model system for our system. We chose cancer biology not only because of its importance as a field, but also because it is an expansive, multidisciplinary area of study which involves an expansive network of important causal relationships, only a small subset of which can be discussed in individual papers.
+
+In particular, we choose to focus on the genetic networks of
+significance in cancer biology. We therefore conducted a literature
+search in this area, and identified several “hallmarks” of cancer ([1]
+and [2]). These hallmarks are phenotypic--that is, they are classes of cellular responses or activities--that are induced by a complicated web of genetic interactions. The hallmarks we focused on, from [1], are:
+
+\begin{enumerate}
+\item Sustain Proliferative Signaling
+\item Evading Growth Suppressors
+\item Resisting Cell Death
+\item Enabling Replicative Immorality
+\item Inducing Angiogenesis
+\item Activating Invasion and Metastasis
+\end{enumerate}
+
+We chose to represent the underlying genetic networks as circuit diagrams, with each genetic element either inducing or repressing the other genetic elements it is wired to. We clustered these networks loosely into the pathways they most frequently are associated with in literature, and encoded each network with a minimum number of causal relationships. We also included a small number of non-molecular circuit inputs and outputs, namely circuit 'outputs' or results:
+\begin{itemize}
+\item Gene Expression
+\item Cell Proliferation (Cell cycle)
+\item Cell Death (Apoptosis)
+\end{itemize}
+
+As well as circuit non-molecular inputs:
+\begin{itemize}
+\item DNA Damage Sensor
+\item Abnormality Sensor
+\item Other cells
+\end{itemize}
+
+\begin{figure}[htb]
+\centering
+\includegraphics[width=.9\linewidth]{../data/cancer_biology/BIO-KNOWLEDGE-DIAGRAM.png}
+\caption{\label{fig:cell-image}Visual "circuit diagram" of causal relationships utilized by our system.}
+\end{figure}
+
+The relationships used are captured in the stylized diagram presented in Figure \ref{fig:cell-image}, and also outlined explicitly in Appendix A.
+
+Note that, as discussed above, these relationships need not be explicitly entered--our program can infer these causal relationships from tables of experimental biological data. As an example, observe in Figure \ref{fig:cell-image} that the signaling molecule \texttt{p15} blocks the compound molecule \texttt{Cyclin-D:CDK4}, or
+
+\begin{quote}
+\begin{verbatim}
+(‘BLOCK (p15 Cyclin-D:CDK4) ‘()).
+\end{verbatim}
+\end{quote}
+
+This relationship can be entered explicitly, or can be inferred automatically from the below example experimental data:
+
+This relationship can be entered explicitly, or can be inferred automatically from the below example experimental data:
+
+\begin{center}
+\begin{tabular}{cc}
+p15 (nM) & Cyclin-D:CDK4 (nM)\\
+\hline
+86 & 23\\
+63 & 34\\
+41 & 45\\
+22 & 58\\
+15 & 89\\
+\end{tabular}
+\end{center}
+\section{Future work}
+\label{sec-4}
+
+
+\subsection{Conflicts}
+\label{sec-4-1}
+The current system does not support detecting conflicts. We could transition our knowledge store (currently just a list of statements) into something that resembles a truth management system. This would allow us to have multiple views of the truth.
+\subsection{Context-predicates}
+\label{sec-4-2}
+The \texttt{ie:infer} procedure takes a \texttt{context\_predicate} argument which is not currently used. \texttt{context\_predicate} would be a procedure that takes in one argument, the context of the statement, and returns whether or not the statement should be included while making inferences. The \texttt{context-predicates} would allow users to filter knowledge by its metadata, which includes the authors, journals, subjects, year of publication.
+\subsection{How-related?}
+\label{sec-4-3}
+This procedure would provide a way to query the knowledge structure for the relationship between two objects. For example, if molecule \texttt{MolA} causes the presence of molecule \texttt{MolB}, then \texttt{(how-related? ‘MolA ‘MolB)} would return \texttt{('CAUSE 'MolA 'MolB)}.
+
+This procedure could also be extended to higher-order relationships or degrees of seperation. For example, if \texttt{MolA} causes \texttt{MolB} which causes \texttt{MolC}, the \texttt{how-related?} procedure could return the entire chain of relatedness, or, perhaps, the shortest path between the two.
+\subsection{How-trusted?}
+\label{sec-4-4}
+The procedure \texttt{how-trusted?} would provide a way to query the trustworthy-ness of an input relation. The output of this procedure would be a quantitative representation of the accuracy of the input action statement, which can be derived using the number of times that statement appears in the scientific source, or the credibility of the author or journal in which the statement was drawn from (this author or journal credibility could feasibly be deduced from application of a PageRank-like algorithm to the scientific citation network).
+\subsection{Most-important?}
+\label{sec-4-5}
+This procedure would provide the \texttt{<number>} most important pathways or objects in a given object. The important-ness of an object could be inferred by the number of statements that rely on its value, the number of times the relation is used to make inferences by the pattern matcher, or by a PageRank-like algorithm, with the hyperlink-equivalents being causal relationships (rather than citations, as in the above section).
+\section{Conclusion}
+\label{sec-5}
+Based on our experience, the flexibility of symbolic programming is well aligned with the requirements of an scientific knowledge computation engine. The ability to quickly navigate existing scientific knowledge is lacking, and an engine such as ours could be of substantial influence if deployed in the real-world. This impact could be magnified if our engine is combined with mechanisms for identifying potentially high impact-research.
+
+Although we foresee bottlenecks in pattern matching--and also anticipate that knowledge-searching on very large data sets will require significant computational resources (although this could be mitigated with intelligent pre-processing)--our work serves as a minimal proof-of-concept implementation, and suggests that the development of such a system is feasible.
+\section{References}
+\label{sec-6}
+\begin{enumerate}
+\item Hanahan, D., and Weinberg, R.A. (2000). The Hallmarks of Cancer. Cell 100, 57-70.
+
+\item Hanahan, D., and Weinberg, R.A. (2011). The Hallmarks of Cancer: The Next Generation. Cell 144, 646-674.
+
+\item Heldin, C., Miayazono, K., and Dijke, P. (1997). TGF-Beta signalling from cell membreane to nucleus through SMAD proteins.
+
+\item Huelsken, J., and Juergen, B. (2000). The Wnt signalling pathway. J. Cell Sci. 113, 3545.
+
+\item Muller, H., et al. (2001). E2Fs regulate the expression of genes involved in differentiation, development, proliferation, and apoptosis. Genes Dev., 15(3): 257-285.
+
+\item Wertheimer, Jeremy. \emph{Reasoning from experiments to causal models in molecular cell biology}. (Doctoral dissertation). MIT, 1996.
+\end{enumerate}
+\section{Appendix A}
+\label{sec-7}
+Note that in the following subsections, an \uline{underline} indicates an alias for a family of molecules, while \textbf{bold} indicates a non-molecular input or output.
+
+\subsection{Wnt signaling pathway}
+\label{sec-7-1}
+Relations:
+\begin{itemize}
+\item WNT + Frizzled -> WNT:Frizzled
+\item WNT:Frizzled -> Dishevelled
+\item Dishevelled -> GSK-3Beta
+\item GSK-3Beta -> APC
+\item APC -> Beta-Cetenin
+\item \uline{Other-cell} + E-Cadherin -> Beta-Catenin
+\item Beta-Catenin + TCF -> Beta-Catenin:TCF
+\item Beta-Catenin:TCF -> \textbf{Changes-in-Gene-Expression}
+\end{itemize}
+\subsection{TGF-Beta Pathway}
+\label{sec-7-2}
+Relations:
+\begin{itemize}
+\item TGF-Beta + TGF-Beta-R -> TGF-Beta:TGF-Beta-R
+\item TGF-Beta:TGF-Beta-R -> \uline{SMADs}
+
+\item \uline{SMADs} -> p15
+\item Cyclin-D + CDK4 -> Cyclin-D:CDK4
+\item p16 -| Cyclin-D:CDK4
+\item p15 -| Cyclin-D:CDK4
+\item Cyclin-D:CDK4 -| Rb
+\item HPV-E7 -| Rb
+\item Rb -| \uline{E2Fs}
+\item \uline{E2Fs} -| \textbf{Changes-in-gene-expression}
+
+\item \uline{SMADs} -> p27
+\item Cyclin-E + CDK2 -> Cyclin-E:CDK2
+\item p27 -| Cyclin-E:CDK2
+\item Cyclin-E:CDK2 -> \textbf{Cell-Proliferation}
+\item \textbf{Changes-in-gene-expression} -> Cyclin-E:CDK2
+
+\item \uline{SMADs} -> p21
+\item Cyclin-E + CDK2 -> Cyclin-E:CDK2
+\item p21 -| Cyclin-E:CDK2
+\end{itemize}
+\subsection{DNA Damage sensing pathway}
+\label{sec-7-3}
+
+Relations:
+\begin{itemize}
+\item p53 -> p21
+\item p53 -> Bax
+\item p53 -> \textbf{Changes-in-gene-expression}
+\item \textbf{Changes-in-gene-expression} -> ARF
+\item ARF -| MDM2
+\item MDM2 -| p53
+\item Bax -> Mitochondria
+\item Mitochondria + (not Bcl2) -> \textbf{Apoptosis}
+\end{itemize}
+\subsection{Death factor pathway}
+\label{sec-7-4}
+Relations:
+\begin{itemize}
+\item FasL + Fas + (not FAP) + (not Decoy-Fas) -> FADD
+\item FADD -> Caspase8
+\item Caspase8 -> Bid
+\item Caspase8 -> \textbf{Apoptosis}
+\item Bid -> Mitochondria
+\item \textbf{Abnormality-sensor} -> Bim
+\item Bim -> Mitochondria
+\item Mitochondria + (not Bcl2) + (not BclXL) -> CytochromeC
+\item CytochromeC -> Caspase9
+\item Caspase9 -> \textbf{Apoptosis}
+\end{itemize}
+\subsection{Cytokine Pathway}
+\label{sec-7-5}
+Relations:
+\begin{itemize}
+\item \uline{Cytokines} + Cytokine-R -> \uline{Jaks}
+\item \uline{Jaks} -> Stat3
+\item \uline{Jaks} -> Stat5
+\item Stat3 -> BclXL
+\item Stat5 -> BclXL
+\item Stat3 -> \textbf{Changes-in-gene-expression}
+\item Stat5 -> \textbf{Changes-in-gene-expression}
+\end{itemize}
+\subsection{Survival Factor Pathway}
+\label{sec-7-6}
+Relations:
+\begin{itemize}
+\item \uline{Survival-factors} + RTK -> P13K
+\item \uline{Survival-factors} + RTK -> Ras
+\item P13K -> Akt
+\item PTEN -| Akt
+\item Akt -> Akk-alpha
+\item Akk-alpha -| IkB
+\item IkB -> NF-KB
+\item P13K -> PKC
+\item PKC -> NF-KB
+\item NF-KB -> \textbf{Changes-in-gene-expression}
+\end{itemize}
+\subsection{Hormone Pathway}
+\label{sec-7-7}
+Relations:
+\begin{itemize}
+\item Estrogen -> ER
+\item ER -> \textbf{Changes-in-gene-expression}
+\item Bombesin + 7-TMR -> G-Protein
+\item G-Protein -> Ad-Cyclin
+\item Ad-Cyclin -> PKA
+\item PKA -> CREB
+\item CREB -> \textbf{Changes-in-gene-expression}
+\end{itemize}
+\subsection{Growth factor pathway}
+\label{sec-7-8}
+Relations:
+\begin{itemize}
+\item TGF-alpha + RTK -> Grb2
+\item TGF-alpha + RTK -> Src
+\item TGF-alpha + RTK -> SOS
+\item Grb2 -> Ras
+\item SOS -> Ras
+\item NF1 -| Ras
+\item Abl -| Ras
+\item Fyn -> Ras
+\item Shc -> Ras
+\item Src -> Ras
+\item Ras -> Raf
+\item Ras -> CdC42
+\item PLC -> PKC
+\item PKC -> Raf
+\item CdC42 -> Rac
+\item Rac -> Rho
+\item Rho -> \textbf{Changes-in-gene-expression}
+\item Raf -> MEK
+\item Mos -> MEK
+\item MEK -> MEKK
+\item MEK -> MAPK
+\item MAPK -> EIK
+\item EIK -> Fos
+\item Fos -> \textbf{Changes-in-gene-expression}
+\item MAPK -> Myc:Max
+\item MEKK -> Myc:Max
+\item Myc + Max -> Myx:Max
+\item Mad + Max -> Mad:Max
+\item Myc:Max -| Mad:Max
+\item Mad:Max -| Myc:Max
+\item \uline{MKKs} -> MAPK
+\item \uline{MKKs} -> \uline{JNKs}
+\item \uline{JNKs} -> Jun
+\item Jun -> \textbf{Changes-in-gene-expression}
+\item MAPK -> Jun
+\end{itemize}
+\subsection{ECM Pathway}
+\label{sec-7-9}
+\begin{itemize}
+\item ECM + \uline{Integrins} -> FAK
+\item ECM + \uline{Integrins} -> CdC42
+\item ECM + \uline{Integrins} -> Fyn
+\item CdC42 -> P13K
+\item P13K -> Rac
+\item Rac -> \uline{JKKs}
+\item FAK -> P13K
+\item FAK -> Cas
+\item Cas -> Crk
+\item Crk -> \uline{JKKs}
+\end{itemize}
+
+
+
+
+
+\begin{quote}
+\end{quote}
+% Emacs 24.3.1 (Org mode 8.2.4)
+\end{document}
