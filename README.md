@@ -3,7 +3,7 @@
 
 ###Report
 
-report.pdf
+final_report/final_report.pdf
 
 ###Demos
 
@@ -11,7 +11,7 @@ main.scm
 
 ###Experiments on Findings from Cancer Biology:
 
-Within data/cancer_biology folder
+Within data/cancer_biology/:
 
 **Knowledge from bio pathways**: original_bio_knowledge.pdf
 
