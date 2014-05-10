@@ -1,4 +1,6 @@
-;;;; main.scm
+;;;; main.scm 
+
+; Demos and tests are located here.
 
 (load "inference_engine.scm")
 (load "linear_estimator.scm")

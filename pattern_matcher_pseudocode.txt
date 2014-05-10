@@ -1,6 +1,7 @@
 ;;;; pattern_matcher_pseudocode.txt
 
 //pm:match procedure
+
 pm:match knowledge rules on_match_handler
   for each rule:
     get patterns, new_statement_pattern
@@ -14,7 +15,8 @@ pm:match knowledge rules on_match_handler
     
   keep going until no more new knowledge added
   
-//pm:match-multiple: like match-combinators, except it will match 
+//pm:match-multiple procedure
+
 match-multiple knowledge patterns dict matched_statements cont
   if no patterns
     return (cont dict matched_statements)
