@@ -47,7 +47,7 @@
 |#
 
 
-; demo of inferences on small set of knowledge/rules/aliases
+; Demo of inferences with simple data / aliases
 (define (simple-demo)
   (load "data/simple/knowledge.scm")
   (load "data/simple/rules.scm")
