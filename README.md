@@ -56,7 +56,7 @@ As symbolic programming seems seems well-suited for such a challenge, we set out
 
 # System design
 
-As shown in Figure \ref{fig:system-diagram}, our implemented system includes
+As shown in the system diagram, below, our implemented system includes
 
 1.  Biology knowledge and rules data sets,
 
@@ -68,7 +68,7 @@ As shown in Figure \ref{fig:system-diagram}, our implemented system includes
 
 ![Schematic for project design and implementation.](../docs/systemdiagram.png)
 
-To better explain our system's function, consider the following toy example: When supplied with the tables of experimental data in Table \ref{tab:toy-data}, our linear estimator infers the relationships
+To better explain our system's function, consider the following toy example: When supplied with the tables of toy experimental data in the table below, our linear estimator infers the relationships
 
 >     '(CAUSE X Y)
 >     '(CAUSE Y Z)
@@ -467,7 +467,7 @@ As well as circuit non-molecular inputs:
 
 ![Visual "circuit diagram" of causal relationships utilized by our system.](../data/cancer_biology/BIO-KNOWLEDGE-DIAGRAM.png)
 
-The relationships used are captured in the stylized diagram presented in Figure \ref{fig:cell-image}, and also outlined explicitly in Appendix A.
+The relationships used are captured in the stylized diagram above (see references) and outlined explicitly in Appendix A.
 
 Note that, as discussed above, these relationships need not be explicitly entered&#x2013;our program can infer these causal relationships from tables of experimental biological data. As an example, observe in Figure \ref{fig:cell-image} that the signaling molecule `p15` blocks the compound molecule `Cyclin-D:CDK4`, or
 
