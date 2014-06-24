@@ -97,7 +97,6 @@ and logically infers the relationship
 <tr>
 <th scope="col" class="right">Molecule X (nM)</th>
 <th scope="col" class="right">Molecule Y (nM)</th>
-<th scope="col" class="left">&vert;</th>
 <th scope="col" class="right">Molecule Y (nM)</th>
 <th scope="col" class="right">Molecule Z (nM)</th>
 </tr>
@@ -107,7 +106,6 @@ and logically infers the relationship
 <tr>
 <td class="right">59</td>
 <td class="right">350</td>
-<td class="left">&vert;</td>
 <td class="right">560</td>
 <td class="right">3</td>
 </tr>
@@ -116,7 +114,6 @@ and logically infers the relationship
 <tr>
 <td class="right">34</td>
 <td class="right">459</td>
-<td class="left">&vert;</td>
 <td class="right">485</td>
 <td class="right">13</td>
 </tr>
@@ -125,7 +122,6 @@ and logically infers the relationship
 <tr>
 <td class="right">26</td>
 <td class="right">684</td>
-<td class="left">&vert;</td>
 <td class="right">283</td>
 <td class="right">58</td>
 </tr>
@@ -134,7 +130,6 @@ and logically infers the relationship
 <tr>
 <td class="right">12</td>
 <td class="right">798</td>
-<td class="left">&vert;</td>
 <td class="right">54</td>
 <td class="right">205</td>
 </tr>
