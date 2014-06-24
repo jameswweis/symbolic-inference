@@ -66,7 +66,7 @@ As shown in the system diagram, below, our implemented system includes
 
 4.  A linear estimator that is capable of generating new causal relationships based on tables of experimental molecular concentration data.
 
-![Schematic for project design and implementation.](../docs/systemdiagram.png)
+![Schematic for project design and implementation.](./docs/systemdiagram.png)
 
 To better explain our system's function, consider the following toy example: When supplied with the tables of toy experimental data in the table below, our linear estimator infers the relationships
 
@@ -465,7 +465,7 @@ As well as circuit non-molecular inputs:
 
 -   Other cells
 
-![Visual "circuit diagram" of causal relationships utilized by our system.](../data/cancer_biology/BIO-KNOWLEDGE-DIAGRAM.png)
+![Visual "circuit diagram" of causal relationships utilized by our system.](./data/cancer_biology/BIO-KNOWLEDGE-DIAGRAM.png)
 
 The relationships used are captured in the stylized diagram above (see references) and outlined explicitly in Appendix A.
 
@@ -831,22 +831,3 @@ Relations:
 -   Cas -> Crk
 
 -   Crk -> <span class="underline">JKKs</span>
-
-
-
-
-
->
-<div id="footnotes">
-<h2 class="footnotes">Footnotes: </h2>
-<div id="text-footnotes">
-
-<div class="footdef"><sup><a id="fn.1" name="fn.1" class="footnum" href="#fnr.1">1</a></sup> <p>DEFINITION NOT FOUND.</p></div>
-
-<div class="footdef"><sup><a id="fn.2" name="fn.2" class="footnum" href="#fnr.2">2</a></sup> <p>DEFINITION NOT FOUND.</p></div>
-
-<div class="footdef"><sup><a id="fn.3" name="fn.3" class="footnum" href="#fnr.3">3</a></sup> <p>DEFINITION NOT FOUND.</p></div>
-
-
-</div>
-</div>
