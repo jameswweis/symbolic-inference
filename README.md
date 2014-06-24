@@ -1,3 +1,7 @@
+# Symbolic representation and logical inference of knowledge from scientific publications
+
+Leo Liu, James Weis, and Yasemin Gokce <br/> {leoliu, jww, yaseming}@mit.edu
+
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
 <div id="text-table-of-contents">
