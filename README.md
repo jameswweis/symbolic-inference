@@ -57,6 +57,7 @@ One can imagine a world in which scientific literature was written&#x2014;or at 
 
 As symbolic programming seems seems well-suited for such a challenge, we set out to implement a symbolic vocabulary and computation engine for scientific literature, inspired by the work in [6]. Our system is able to (1) infer causal relationships from raw biological data, (2) logically infer new relationships, and (3) make that data available for quick and intuitive human interaction, or “science surfing.”
 
+<a name="sec-2"/>
 # System design
 
 As shown in the system diagram, below, our implemented system includes
@@ -146,10 +147,12 @@ Which will output that the statement is, indeed, correct, and will also output t
 
 In our system, we focus on the relationships `CAUSE` and `BLOCK`, but the system is extensible to handle other rules such as `UP-REGULATE`, `INVOLVES`, `ON-SAME-PATHWAY`, etc.
 
+<a name="sec-2-1"/>
 ## Data structures
 
 We have two data files: knowledge and rules. Both are in a list of list structure. List elements are unique; no duplicates are allowed. Knowledge can be entered manually or deduced from tables of molecular concentration data. Rules have to be entered manually.
 
+<a name="sec-2-1-1"/>
 ### Knowledge
 
 Each piece of knowledge is made of three parts:
@@ -194,6 +197,7 @@ To further illustrate our data structures, the context for the paper from which 
 
     We modified GJS’s pattern matcher so that whenever it does element-to-element equality tests, it searches the alias definitions whenever it compares a symbol, which represents a single molecule or entity, to a string, which represents a set of related objects. This code is at the top of `matcher.scm` in the procedure `match:special-equal?`.
 
+<a name="sec-2-1-2"/>
 ### Rules
 
 Each rule is made of:
@@ -216,6 +220,7 @@ Examples of rules include:
 >            '(CAUSE (? b) (? c)))
 >      '(BLOCK (? a) (? c)))
 
+<a name="sec-2-2"/>
 ## API
 
 The API can be grouped into (1) functions for adding knowledge, rules, and aliases to the system and (2) functions for making inferences and querying the knowledge.
@@ -235,6 +240,7 @@ API for making inferences and querying the knowledge:
 
 Context predicates are not currently supported. See section 4.2 for how they could be used.
 
+<a name="sec-2-3"/>
 ## Inference engine
 
 The inference engine takes a set of knowledge and a set of rules and makes inferences by applying the set of rules as many times as possible to the knowledge to obtain new statements. These "inferred statements" are added to the existing set of knowledge, and the rules are again applied against the growing set of knowledge until no new inferences can be made.
@@ -309,6 +315,7 @@ was inferred from two other statements, which were each inferred from other stat
 >        (cons "pubmed" "9393997")
 >        (cons "locations" (list "loc_a1" "loc_b1"))))
 
+<a name="sec-2-4"/>
 ## Inferences by pattern matching
 
 To make inferences, the inference engine runs the pattern matcher. Given a set of knowledge and a set of rules, the pattern matcher tries to apply the rules to the existing knowledge. Whenever it finds a new statement that could be added to the knowledge based on a rule, it calls a callback.
@@ -376,6 +383,7 @@ When `pm:match-multiple` succeeds, it will execute `cont-match-multiple`, which 
 
 The procedure `ie:infer` continues to run until no new knowledge can be generated. At that point, all inferences have been made and the user can query the new knowledge.
 
+<a name="sec-2-5"/>
 ## Linear estimator
 
 The linear estimator takes a table of molecule concentrations (stored in a text file) and generates a knowledge statement. The table must have 2 columns, one for each molecule. The first row contains the molecule names; the other rows contain their concentrations. For example:
@@ -429,6 +437,7 @@ The linear estimator takes a table of molecule concentrations (stored in a text 
 
 The linear estimator calculates the correlation of `A` and `B` and outputs a knowledge statement for "A blocks B" or "A causes B" by thresholding the correlation. The correlation is the slope of the linear regression line for `A` and `B`. That knowledge can be fed directly to the inference engine. The linear estimator gives the user the ability to input tables directly from scientific publications and make inferences on them.
 
+<a name="sec-3"/>
 # Experiments on finding from cancer biology
 
 We chose cancer biology as a model system for our system. We chose cancer biology not only because of its importance as a field, but also because it is an expansive, multidisciplinary area of study which involves an expansive network of important causal relationships, only a small subset of which can be discussed in individual papers.
@@ -522,36 +531,44 @@ This relationship can be entered explicitly, or can be inferred automatically fr
 </tbody>
 </table>
 
+<a name="sec-4"/>
 # Future work
 
+<a name="sec-4-1"/>
 ## Conflicts
 
 The current system does not support detecting conflicts. We could transition our knowledge store (currently just a list of statements) into something that resembles a truth management system. This would allow us to have multiple views of the truth.
 
+<a name="sec-4-2"/>
 ## Context-predicates
 
 The `ie:infer` procedure takes a `context_predicate` argument which is not currently used. `context_predicate` would be a procedure that takes in one argument, the context of the statement, and returns whether or not the statement should be included while making inferences. The `context-predicates` would allow users to filter knowledge by its metadata, which includes the authors, journals, subjects, year of publication.
 
+<a name="sec-4-3"/>
 ## How-related?
 
 This procedure would provide a way to query the knowledge structure for the relationship between two objects. For example, if molecule `MolA` causes the presence of molecule `MolB`, then `(how-related? ‘MolA ‘MolB)` would return `('CAUSE 'MolA 'MolB)`.
 
 This procedure could also be extended to higher-order relationships or degrees of seperation. For example, if `MolA` causes `MolB` which causes `MolC`, the `how-related?` procedure could return the entire chain of relatedness, or, perhaps, the shortest path between the two.
 
+<a name="sec-4-4"/>
 ## How-trusted?
 
 The procedure `how-trusted?` would provide a way to query the trustworthy-ness of an input relation. The output of this procedure would be a quantitative representation of the accuracy of the input action statement, which can be derived using the number of times that statement appears in the scientific source, or the credibility of the author or journal in which the statement was drawn from (this author or journal credibility could feasibly be deduced from application of a PageRank-like algorithm to the scientific citation network).
 
+<a name="sec-4-5"/>
 ## Most-important?
 
 This procedure would provide the `<number>` most important pathways or objects in a given object. The important-ness of an object could be inferred by the number of statements that rely on its value, the number of times the relation is used to make inferences by the pattern matcher, or by a PageRank-like algorithm, with the hyperlink-equivalents being causal relationships (rather than citations, as in the above section).
 
+<a name="sec-5"/>
 # Conclusion
 
 Based on our experience, the flexibility of symbolic programming is well aligned with the requirements of an scientific knowledge computation engine. The ability to quickly navigate existing scientific knowledge is lacking, and an engine such as ours could be of substantial influence if deployed in the real-world. This impact could be magnified if our engine is combined with mechanisms for identifying potentially high impact-research.
 
 Although we foresee bottlenecks in pattern matching&#x2013;and also anticipate that knowledge-searching on very large data sets will require significant computational resources (although this could be mitigated with intelligent pre-processing)&#x2013;our work serves as a minimal proof-of-concept implementation, and suggests that the development of such a system is feasible.
 
+<a name="sec-6"/>
 # References
 
 1.  Hanahan, D., and Weinberg, R.A. (2000). The Hallmarks of Cancer. Cell 100, 57-70.
@@ -566,10 +583,12 @@ Although we foresee bottlenecks in pattern matching&#x2013;and also anticipate t
 
 6.  Wertheimer, Jeremy. *Reasoning from experiments to causal models in molecular cell biology*. (Doctoral dissertation). MIT, 1996.
 
+<a name="sec-7"/>
 # Appendix A
 
 Note that in the following subsections, an <span class="underline">underline</span> indicates an alias for a family of molecules, while **bold** indicates a non-molecular input or output.
 
+<a name="sec-7-1"/>
 ## Wnt signaling pathway
 
 Relations:
@@ -590,6 +609,7 @@ Relations:
 
 -   Beta-Catenin:TCF -> **Changes-in-Gene-Expression**
 
+<a name="sec-7-2"/>
 ## TGF-Beta Pathway
 
 Relations:
@@ -630,6 +650,7 @@ Relations:
 
 -   p21 -| Cyclin-E:CDK2
 
+<a name="sec-7-3"/>
 ## DNA Damage sensing pathway
 
 Relations:
@@ -650,6 +671,7 @@ Relations:
 
 -   Mitochondria + (not Bcl2) -> **Apoptosis**
 
+<a name="sec-7-4"/>
 ## Death factor pathway
 
 Relations:
@@ -674,6 +696,7 @@ Relations:
 
 -   Caspase9 -> **Apoptosis**
 
+<a name="sec-7-5"/>
 ## Cytokine Pathway
 
 Relations:
@@ -692,6 +715,7 @@ Relations:
 
 -   Stat5 -> **Changes-in-gene-expression**
 
+<a name="sec-7-6"/>
 ## Survival Factor Pathway
 
 Relations:
@@ -716,6 +740,7 @@ Relations:
 
 -   NF-KB -> **Changes-in-gene-expression**
 
+<a name="sec-7-7"/>
 ## Hormone Pathway
 
 Relations:
@@ -734,6 +759,7 @@ Relations:
 
 -   CREB -> **Changes-in-gene-expression**
 
+<a name="sec-7-8"/>
 ## Growth factor pathway
 
 Relations:
@@ -808,6 +834,7 @@ Relations:
 
 -   MAPK -> Jun
 
+<a name="sec-7-9"/>
 ## ECM Pathway
 
 -   ECM + <span class="underline">Integrins</span> -> FAK
