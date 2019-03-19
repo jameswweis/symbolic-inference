@@ -49,6 +49,7 @@
 </div>
 
 <a name="sec-1"/>
+
 # Introduction
 
 The majority of existing scientific knowledge is contained within scientific journals, but its structure is obfuscated from facile computation by the complications of natural language. As such, the ability to automatically parse information from the existing set of knowledge is  hampered. The focus of this project is to investigate methods of representing and computing on scientific knowledge in a symbolic fashion, using the genetic pathways of significance in cancer biology as a model.
@@ -58,6 +59,7 @@ One can imagine a world in which scientific literature was written&#x2014;or at 
 As symbolic programming seems seems well-suited for such a challenge, we set out to implement a symbolic vocabulary and computation engine for scientific literature, inspired by the work in [6]. Our system is able to (1) infer causal relationships from raw biological data, (2) logically infer new relationships, and (3) make that data available for quick and intuitive human interaction, or “science surfing.”
 
 <a name="sec-2"/>
+
 # System design
 
 As shown in the system diagram, below, our implemented system includes
